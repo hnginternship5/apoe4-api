@@ -6,6 +6,7 @@
     npm install
 ```
 ```bash
+    cp .env.sample .env
     npm run watch
 ```
 

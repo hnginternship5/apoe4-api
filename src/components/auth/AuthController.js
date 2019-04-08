@@ -14,10 +14,32 @@ class AuthController {
         this.login = this.login.bind(this);
     }
     /**
+     * @api {post} /register Register a user
+     * @apiName register
+     * @apiGroup Auth
+     *
+     *
+     * @apiSuccess {String} accessToken User access token.
+     *
+     * @apiSuccessExample Success-Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *       "accessToken": "oqueoqiniodq...",
+     *     }
+     *
+     * @apiError ValidationError For Invalid data.
+     *
+     * @apiErrorExample Error-Response:
+     *     HTTP/1.1 404 Not Found
+     *     {
+     *       "status": "error",
+     *        "message": "...",
+     *         ...
+     *     }
      * Register User
-     * @param {express.Request} req Request Object
-     * @param {express.Response} res Reponse Object
-     * @param {express.NextFunction} next NextFunction middleware
+     * @apiParam {express.Request} req Request Object
+     * @apiParam {express.Response} res Reponse Object
+     * @apiParam {express.NextFunction} next NextFunction middleware
      */
     async register(req, res, next) {
         let existingUser = await User.findOne({
@@ -45,16 +67,40 @@ class AuthController {
             const token = this.signToken(user._id);
 
             res.json({
-                access_token: token,
+                accessToken: token,
             });
         });
     }
 
     /**
-     * Log in User
-     * @param {express.Request} req Request Object
-     * @param {express.Response} res Reponse Object
-     * @param {express.NextFunction} next NextFunction middleware
+     * @api {post} /login Login a user
+     * @apiName login
+     * @apiGroup Auth
+     *
+     *
+     * @apiSuccess {String} accessToken User access token.
+     *
+     * @apiSuccessExample Success-Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *       "accessToken": "oqueoqiniodq...",
+     *     }
+     *
+     * @apiError ValidationError For Invalid data.
+     * @apiError InvalidCredentials For wrong email or password.
+     * @apiError UserNotFound For Invalid data.
+     *
+     * @apiErrorExample Error-Response:
+     *     HTTP/1.1 404 Not Found
+     *     {
+     *       "status": "error",
+     *        "message": "...",
+     *         ...
+     *     }
+     * Register User
+     * @apiParam {express.Request} req Request Object
+     * @apiParam {express.Response} res Reponse Object
+     * @apiParam {express.NextFunction} next NextFunction middleware
      */
     async login(req, res, next) {
         if (!req.body.email || !req.body.password) {
@@ -69,7 +115,7 @@ class AuthController {
                 session: false,
             },
             (err, user, info) => {
-                if (err) return next(new AppError(err.message || 'An error occured creating user', httpErrorCodes.INTERNAL_SERVER_ERROR, true));
+                if (err) return next(new AppError(err.message || 'An error occured login in user', httpErrorCodes.INTERNAL_SERVER_ERROR, true));
                 if (!user) {
                     const errors = JsendSerializer
                         .error(info.message || 'User not found', httpErrorCodes.NOT_FOUND);
@@ -91,7 +137,7 @@ class AuthController {
                         const token = this.signToken(user._id);
 
                         res.json({
-                            access_token: token,
+                            accessToken: token,
                         });
 
                     },

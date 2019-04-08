@@ -5,6 +5,7 @@ import cors from 'cors';
 import compression from 'compression';
 import config from './config';
 import AppError from './handlers/AppError';
+import path from 'path';
 
 // routers
 import authRouter from './routes/auth';
@@ -23,6 +24,7 @@ app.use(
     }),
 );
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, "../public")));
 
 //routes
 app.get('/', (req, res) => res.send('Welcome to APOE4 API!'));

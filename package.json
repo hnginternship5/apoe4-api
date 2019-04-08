@@ -9,7 +9,7 @@
     "build": "./node_modules/.bin/babel ./src --out-dir ./dist --ignore node_modules",
     "dev": "npm run build && nodemon dist/index.js",
     "watch": "nodemon --exec babel-node src/index.js",
-    "apidoc": "apidoc -i src -o apidoc/"
+    "apidoc": "apidoc -i src -o public/docs/"
   },
   "repository": {
     "type": "git",

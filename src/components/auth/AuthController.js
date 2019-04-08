@@ -13,9 +13,11 @@ class AuthController {
         this.register = this.register.bind(this);
         this.login = this.login.bind(this);
     }
+
     /**
      * @api {post} /register Register a user
      * @apiName register
+     * @apiVersion 1.0.0
      * @apiGroup Auth
      *
      *
@@ -29,17 +31,18 @@ class AuthController {
      *
      * @apiError ValidationError For Invalid data.
      *
-     * @apiErrorExample Error-Response:
-     *     HTTP/1.1 404 Not Found
+     * @apiErrorExample ValidationError-Response:
+     *      HTTP/1.1 400 OK
      *     {
      *       "status": "error",
      *        "message": "...",
-     *         ...
+     *         "data": []
      *     }
-     * Register User
-     * @apiParam {express.Request} req Request Object
-     * @apiParam {express.Response} res Reponse Object
-     * @apiParam {express.NextFunction} next NextFunction middleware
+     *
+     * @apiparam {String} firstName User's First name
+     * @apiparam {String} lastName User's lastname
+     * @apiparam {String} email user's email
+     * @apiparam {String} password user's password
      */
     async register(req, res, next) {
         let existingUser = await User.findOne({
@@ -70,11 +73,12 @@ class AuthController {
                 accessToken: token,
             });
         });
-    }
+    };
 
     /**
      * @api {post} /login Login a user
      * @apiName login
+     * @apiVersion 1.0.0
      * @apiGroup Auth
      *
      *
@@ -83,13 +87,34 @@ class AuthController {
      * @apiSuccessExample Success-Response:
      *     HTTP/1.1 200 OK
      *     {
-     *       "accessToken": "oqueoqiniodq...",
+     *       "accessToken": "oqueoqiniodq..."
      *     }
      *
-     * @apiError ValidationError For Invalid data.
+     * @apiError ValidationError for invalid input data
      * @apiError InvalidCredentials For wrong email or password.
      * @apiError UserNotFound For Invalid data.
      *
+     * @apiErrorExample ValidationError-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *       "status": "error",
+     *        "message": "You must provide email and password",
+     *         ...
+     *     }
+     * @apiErrorExample InvalidCredentials-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *       "status": "error",
+     *        "message": "Incorrect email or password.",
+     *         ...
+     *     }
+     * @apiErrorExample UserNotFound-Response:
+     *     HTTP/1.1 404 Not Found
+     *     {
+     *       "status": "error",
+     *        "message": "User not found",
+     *         ...
+     *     }
      * @apiErrorExample Error-Response:
      *     HTTP/1.1 404 Not Found
      *     {
@@ -97,10 +122,9 @@ class AuthController {
      *        "message": "...",
      *         ...
      *     }
-     * Register User
-     * @apiParam {express.Request} req Request Object
-     * @apiParam {express.Response} res Reponse Object
-     * @apiParam {express.NextFunction} next NextFunction middleware
+     *
+     * @apiparam {String} email user email
+     * @apiparam {String} password password
      */
     async login(req, res, next) {
         if (!req.body.email || !req.body.password) {

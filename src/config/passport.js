@@ -1,12 +1,12 @@
 import passport from 'passport';
 import passportJWT from 'passport-jwt';
-import LocalStrategy from 'passport-local';
+import passportLocalStrategy from 'passport-local';
 import User from '../components/user/userModel';
 import config from '.';
 
 const ExtractJWT = passportJWT.ExtractJwt;
 const JWTStrategy = passportJWT.Strategy;
-const LocalStrategy = LocalStrategy.Strategy;
+const LocalStrategy = passportLocalStrategy.Strategy;
 
 
 passport.use(
@@ -65,4 +65,4 @@ passport.use(
   ),
 );
 
-exports = passport;
+export default passport;

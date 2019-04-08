@@ -3,9 +3,20 @@ import httpErrorCodes from '../../util/httpErrorCodes';
 import JsendSerializer from '../../util/JsendSerializer';
 import AppError from '../../handlers/AppError';
 import passport from '../../config/passport';
+import User from '../user/userModel';
 
 class AuthController {
-    register = async (req, res, next) => {
+    constructor() {
+        this.register = this.register.bind(this);
+        this.login = this.login.bind(this);
+    }
+    /**
+     * Register User
+     * @param {express.Request} req Request Object
+     * @param {express.Response} res Reponse Object
+     * @param {express.NextFunction} next NextFunction middleware
+     */
+    async register(req, res, next) {
         let existingUser = await User.findOne({
             email: req.body.email
         });
@@ -28,7 +39,7 @@ class AuthController {
                 return next(new AppError('An error occured creating user', httpErrorCodes.INTERNAL_SERVER_ERROR, true));
             }
 
-            const token = signToken(user._id);
+            const token = this.signToken(user._id);
 
             res.json({
                 access_token: token,
@@ -36,7 +47,13 @@ class AuthController {
         });
     }
 
-    login = async (req, res, next) => {
+    /**
+     * Log in User
+     * @param {express.Request} req Request Object
+     * @param {express.Response} res Reponse Object
+     * @param {express.NextFunction} next NextFunction middleware
+     */
+    async login(req, res, next) {
         if (!req.body.email || !req.body.password) {
             const errors = JsendSerializer
                 .fail('You must provide email and password', null, httpErrorCodes.BAD_REQUEST);
@@ -68,7 +85,7 @@ class AuthController {
                             return res.status(httpErrorCodes.INTERNAL_SERVER_ERROR).send(errors);
                         }
 
-                        const token = signToken(user._id);
+                        const token = this.signToken(user._id);
 
                         res.json({
                             access_token: token,
@@ -80,7 +97,7 @@ class AuthController {
         )(req, res);
     }
 
-    signToken = (id) => {
+    signToken(id) {
         return jwt.sign({
             id
         }, process.env.JWT_SECRET, {
@@ -88,7 +105,7 @@ class AuthController {
         });
     }
 
-    signRefreshToken = (id) => {
+    signRefreshToken(id) {
         return jwt.sign({
             id,
         }, process.env.JWT_SECRET, {

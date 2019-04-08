@@ -1,4 +1,3 @@
-const JSONAPIError = require('jsonapi-serializer').Error;
 
 class AppError {
     constructor(message, statusCode, isOperational, title) {
@@ -17,4 +16,4 @@ class AppError {
 
 AppError.constructor.prototype.__proto__ = Error.prototype;
 
-exports = AppError;
+export default AppError;

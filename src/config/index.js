@@ -25,6 +25,7 @@ dotenv.config({
 });
 
 const defaultVars = {
+  // env: process.env.NODE_ENV,
   server: {
     port: process.env.PORT,
   },

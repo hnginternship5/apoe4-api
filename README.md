@@ -15,7 +15,7 @@ visit http://localhost:7777
 ## Documentation
 Visit [APIDOCJS](http://apidocjs.com/) to learn how to use doc blocks. You can also check the AuthController for an existing documentation format.
 
-To generate document:
+To generate documentation:
 ```bash
     npm run apidoc
 ```

@@ -5,6 +5,9 @@ import AppError from '../../handlers/AppError';
 import passport from '../../config/passport';
 import User from '../user/userModel';
 
+/**
+ * @module AuthController
+ */
 class AuthController {
     constructor() {
         this.register = this.register.bind(this);
@@ -31,8 +34,8 @@ class AuthController {
         newUser.save((err, user) => {
             if (err) {
                 return next(
-                        new AppError(err.message || 'An error occured creating user', httpErrorCodes.INTERNAL_SERVER_ERROR, true)
-                    );
+                    new AppError(err.message || 'An error occured creating user', httpErrorCodes.INTERNAL_SERVER_ERROR, true)
+                );
             }
 
             if (!user) {

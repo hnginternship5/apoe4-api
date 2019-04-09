@@ -15,7 +15,7 @@ class AuthController {
     }
 
     /**
-     * @api {post} /register Register a user
+     * @api {post} /auth/register Register a user
      * @apiName auth/register
      * @apiVersion 1.0.0
      * @apiGroup Auth
@@ -76,7 +76,7 @@ class AuthController {
     };
 
     /**
-     * @api {post} /login Login a user
+     * @api {post} /auth/login Login a user
      * @apiName auth/login
      * @apiVersion 1.0.0
      * @apiGroup Auth

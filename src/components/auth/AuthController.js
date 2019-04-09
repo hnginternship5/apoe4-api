@@ -58,7 +58,6 @@ class AuthController {
 
         newUser.save((err, user) => {
             if (err) {
-                console.log('Failed here');
                 return next(
                     new AppError(err.message || 'An error occured creating user', httpErrorCodes.INTERNAL_SERVER_ERROR, true)
                 );

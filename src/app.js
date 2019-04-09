@@ -49,7 +49,6 @@ app.use((err, req, res, next) => {
         return next(err);
     }
 
-    console.log("here****************************8");
     console.log(
         `${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${
         req.ip
@@ -70,7 +69,6 @@ app.use((err, req, res, next) => {
 });
 
 app.use((err, req, res) => {
-    console.log("came here");
     if (!err.isOperational) {
         console.log(
             'An unexpected error occurred please restart the application!',

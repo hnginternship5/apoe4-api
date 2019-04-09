@@ -3,7 +3,7 @@
     "type": "post",
     "url": "/login",
     "title": "Login a user",
-    "name": "login",
+    "name": "auth_login",
     "version": "1.0.0",
     "group": "Auth",
     "success": {
@@ -99,7 +99,7 @@
     "type": "post",
     "url": "/register",
     "title": "Register a user",
-    "name": "register",
+    "name": "auth_register",
     "version": "1.0.0",
     "group": "Auth",
     "success": {

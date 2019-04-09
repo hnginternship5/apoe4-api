@@ -1,5 +1,4 @@
 import User from '../user/userModel';
-//import httpErrorCodes from '../../util/httpErrorCodes';
 
 class UserController {
 

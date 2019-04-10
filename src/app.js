@@ -11,6 +11,7 @@ import expressValidator from "express-validator";
 // routers
 import authRouter from './routes/auth';
 import userRouter from './routes/user';
+import questionRouter from './routes/questions';
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use(expressValidator());
 app.get('/', (req, res) => res.send('Welcome to APOE4 API!'));
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/user', userRouter);
+app.use('/api/v1/questions', questionRouter);
 
 // Handle favicon requests from browsers
 app.get('/favicon.ico', (req, res) => res.sendStatus(204));

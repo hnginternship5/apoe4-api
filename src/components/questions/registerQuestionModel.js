@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 import timestamps from 'mongoose-timestamp';
 
-const registerQuestionSchema = new Schema({
+const RegisterQuestionSchema = new Schema({
     firstName: {
         type: Number,
         required: true,
@@ -39,3 +39,8 @@ const registerQuestionSchema = new Schema({
         required: true,
     },
 });
+
+
+const registerQuestions = mongoose.model('RegisterQuestion', RegisterQuestionSchema);
+
+module.exports = registerQuestions;

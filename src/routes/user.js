@@ -3,11 +3,12 @@ const {
   catchErrors,
 } = require('../helpers');
 
-import * as userController from '../components/user/UserController'
+import UserController from '../components/user/UserController'
+import auth from '../components/auth/AuthController';
 
 router.post('/login', catchErrors(auth.login));
 router.post('/register', catchErrors(auth.register));
-router.get('/userDetails', userController.getUserProfile);
+router.get('/userDetails', UserController.getUserProfile);
 
 
-exports = router;
+export default router;

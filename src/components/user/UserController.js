@@ -3,6 +3,11 @@ import User from '../user/userModel';
  * @module UserController
  */
 
+class UserController {
+    constructor() {
+        this.getUserProfile = this.getUserProfile.bind(this);
+    }
+
      /**
      * @api {get} /user/userDetails Get a user details
      * @apiName user/userDetails
@@ -20,20 +25,23 @@ import User from '../user/userModel';
      *
      * @apiparam {String} useremail User's Email
      */
-     export function getUserProfile(req, res){
-        const {useremail} = req.params;
-        let userDetails = User.findOne(useremail);
-        if(!userDetails){
-            res.status(404);
-        }else {
-            res.status(200).send({details:userDetails});
-        }
+    
+    
+    
+        async getUserProfile(req, res, next) {
+            let {useremail} = req.params;
+            let user = await User.findOne(useremail);
+            if (!user) {
+                res.status(httpErrorCodes.BAD_REQUEST)
+                    .json(JsendSerializer.fail('no user with the email', req.params.useremail, httpErrorCodes.BAD_REQUEST));
+                return;
+            }else {
+                res.status(200).send({profile : user});
+            }
+    
+           
     }
 
-
-    export function getUserAnswer (req, res){
-
-    }
-
-
-//}
+}
+    
+    export default new UserController();

@@ -180,52 +180,9 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/user/userDetails",
-    "title": "Get a user details",
-    "name": "user_userDetails",
-    "version": "1.0.0",
-    "group": "User",
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "message",
-            "description": "<p>userdetails.</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"message\": \"oqueoqiniodq...\",\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "useremail",
-            "description": "<p>User's Email</p>"
-          }
-        ]
-      }
-    },
-    "filename": "src/components/user/UserController.js",
-    "groupTitle": "User"
-  },
-  {
-    "type": "get",
-    "url": "/user/updateUserProfile",
+    "url": "/user/:userId/update",
     "title": "Update a user details",
-    "name": "user_userDetails",
+    "name": "user_update",
     "version": "1.0.0",
     "group": "User",
     "success": {
@@ -271,6 +228,56 @@ define({ "api": [
             "optional": false,
             "field": "lastname",
             "description": "<p>User's lastname</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>User's id</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/components/user/UserController.js",
+    "groupTitle": "User"
+  },
+  {
+    "type": "get",
+    "url": "/user/userDetails",
+    "title": "Get a user details",
+    "name": "user_userDetails",
+    "version": "1.0.0",
+    "group": "User",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": "<p>userdetails.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"message\": \"oqueoqiniodq...\",\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "useremail",
+            "description": "<p>User's Email</p>"
           }
         ]
       }

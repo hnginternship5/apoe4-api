@@ -1,4 +1,5 @@
 import User from '../user/userModel';
+import JsendSerializer from '../../util/JsendSerializer';
 /**
  * @module UserController
  */
@@ -36,15 +37,15 @@ class UserController {
                     .json(JsendSerializer.fail('no user with the email', req.params.useremail, httpErrorCodes.BAD_REQUEST));
                 return;
             }else {
-                res.status(200).send({profile : user});
+                res.status(httpErrorCodes.OK).json(JsendSerializer.success('user profile',{profile : user}));
             }
     
            
     }
 
     /**
-     * @api {get} /user/updateUserProfile Update a user details
-     * @apiName user/userDetails
+     * @api {get} /user/:userId/update Update a user details
+     * @apiName user/update
      * @apiVersion 1.0.0
      * @apiGroup User
      *
@@ -60,11 +61,12 @@ class UserController {
      * @apiparam {String} useremail User's Email
      * @apiparam {string} firstname User's firstname
      * @apiparam {string} lastname User's lastname
+     * @apiparam {String} user_id User's id
      */
 
     async updateUserProfile(req, res, next) {
-        let {useremail} = req.params;
-        let user = await User.findOne(useremail);
+        let {user_id} = req.params;
+        let user = await User.findOne(user_id);
         if (!user) {
             res.status(httpErrorCodes.BAD_REQUEST)
                 .json(JsendSerializer.fail('cannot update profile cause no user found', req.params.useremail, httpErrorCodes.BAD_REQUEST));

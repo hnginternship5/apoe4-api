@@ -37,7 +37,7 @@ class UserController {
                     .json(JsendSerializer.fail('no user with the email', req.params.useremail, httpErrorCodes.BAD_REQUEST));
                 return;
             }else {
-                res.status(httpErrorCodes.OK).json(JsendSerializer.success('user profile',{profile : user}));
+                res.status(httpErrorCodes.OK).json(JsendSerializer.success('User retrieved successfully.', user));
             }
     
            

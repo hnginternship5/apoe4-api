@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 import timestamps from 'mongoose-timestamp';
 
 const RegisterQuestionSchema = new Schema({
-    firstName: {
+    age: {
         type: Number,
         required: true,
     },
@@ -40,7 +40,32 @@ const RegisterQuestionSchema = new Schema({
     },
 });
 
+const DailyQuestionSchema = new Schema({
+    day: {
+        type: String,
+        enum: ['great', 'good', 'fair', 'bad'],
+        required: true,
+    },
+    night: {
+        type: String,
+        enum: ['great', 'good', 'fair', 'bad'],
+        required: true,
+    },
+    plannedActivities: {
+        type: String,
+        required: true,
+    },
+    reminders: {
+        type: Boolean,
+        required: true,
+    },
+});
+
 
 const registerQuestions = mongoose.model('RegisterQuestion', RegisterQuestionSchema);
+const dailyQuestions = mongoose.model('DailyQuestion', DailyQuestionSchema);
 
-module.exports = registerQuestions;
+module.exports = {
+    registerQuestions: registerQuestions,
+    dailyQuestions: dailyQuestions,
+};

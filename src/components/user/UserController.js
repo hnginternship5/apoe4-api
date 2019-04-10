@@ -2,13 +2,13 @@ import User from '../user/userModel';
 /**
  * @module UserController
  */
-class UserController {
+// class UserController {
 
-    constructor() {
-        this.getUserProfile = this.getUserProfile.bind(this);
-        this.getUserAnswer = this.getUserAnswer.bind(this);
-        // this.updateUser = this.updateUser.bind(this);
-    }
+//     constructor() {
+//         this.getUserProfile = this.getUserProfile.bind(this);
+//         this.getUserAnswer = this.getUserAnswer.bind(this);
+//         // this.updateUser = this.updateUser.bind(this);
+//     }
 
      /**
      * @api {get} /user/userDetails Get a user details
@@ -27,7 +27,7 @@ class UserController {
      *
      * @apiparam {String} useremail User's Email
      */
-     getUserProfile = (req, res) => {
+     export function getUserProfile(req, res){
         const {useremail} = req.params;
         let userDetails = User.findOne(useremail);
         if(!userDetails){
@@ -38,11 +38,9 @@ class UserController {
     }
 
 
-    getUserAnswer = (req, res) => {
+    export function getUserAnswer (req, res){
 
     }
 
 
-}
-
-export default new UserController();
+//}

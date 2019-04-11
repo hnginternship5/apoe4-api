@@ -2,11 +2,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 import timestamps from 'mongoose-timestamp';
 
- const RegisterQuestionSchema = new Schema({
-    age: {
-        type: Number,
-        required: true,
-    },
+const RegisterQuestionSchema = new Schema({
     familyHistory: {
         type: Boolean,
         default: false,
@@ -40,7 +36,7 @@ import timestamps from 'mongoose-timestamp';
     },
 });
 
- const DailyQuestionSchema = new Schema({
+const DailyQuestionSchema = new Schema({
     day: {
         type: String,
         enum: ['great', 'good', 'fair', 'bad'],

@@ -179,6 +179,167 @@
     "groupTitle": "Auth"
   },
   {
+    "type": "post",
+    "url": "/questions/daily-question",
+    "title": "Daily Questions",
+    "name": "questions_daily_question",
+    "version": "1.0.0",
+    "group": "Questions",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Response",
+            "description": "<p>Questions registered successfully!</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "Response",
+            "description": "<p>An internal Server error has occured!</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "day",
+            "description": "<p>How was the user's day</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "night",
+            "description": "<p>How was the user's night</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "plannedActivities",
+            "description": "<p>User's planned activities for the day</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Boolean",
+            "optional": false,
+            "field": "reminders",
+            "description": "<p>if user wants to set any reminders for the day</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/components/questions/questionController.js",
+    "groupTitle": "Questions"
+  },
+  {
+    "type": "post",
+    "url": "/questions/register-question",
+    "title": "Questions after registeration",
+    "name": "questions_register_question",
+    "version": "1.0.0",
+    "group": "Questions",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Response",
+            "description": "<p>Questions registered successfully!</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "Response",
+            "description": "<p>An internal Server error has occured!</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Boolean",
+            "optional": false,
+            "field": "familyHistory",
+            "description": "<p>if User's family has history of Alzheimer's</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "dailyActivities",
+            "description": "<p>User's frequent activities daily</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Boolean",
+            "optional": false,
+            "field": "familiar",
+            "description": "<p>if user is familiar with Alzheimer's</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "variant",
+            "description": "<p>user's gene variant</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Boolean",
+            "optional": false,
+            "field": "test",
+            "description": "<p>if user would like suggestions on where to take tests</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Boolean",
+            "optional": false,
+            "field": "highBloodPressure",
+            "description": "<p>if user has a high blood pressure</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Date",
+            "optional": false,
+            "field": "lastCheckup",
+            "description": "<p>user's last checkup date</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/components/questions/questionController.js",
+    "groupTitle": "Questions"
+  },
+  {
     "type": "get",
     "url": "/user/:userId",
     "title": "Get a user details",

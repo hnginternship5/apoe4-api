@@ -10,62 +10,54 @@ class UserController {
         this.getUserProfile = this.getUserProfile.bind(this);
     }
 
-     /**
+    /**
      * @api {get} /user/:userId Get a user details
-     * @apiName user/userDetails
+     * @apiName user/:userId
      * @apiVersion 1.0.0
      * @apiGroup User
      *
      *
-     * @apiSuccess {String} message userdetails.
+     * @apiSuccess {Object} data userdetails.
      *
      * @apiSuccessExample Success-Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *       "message": "oqueoqiniodq...",
-     *     }
-     *
-     * @apiparam {String} useremail User's Email
+     *   HTTP/1.1 200 OK
+     *  {
+     *     "status": "success",
+     *      "message": "User retrieved successfully.",
+     *       "code": 200,
+     *       "data": {
+     *           "active": true,
+     *           "isVerified": false,
+     *           "_id": "5cacc39d97273e4d779d8310",
+     *           "email": "johndoe@example.com",
+     *           "firstName": "John",
+     *           "lastName": "doe",
+     *           "updatedAt": "2019-04-09T16:09:01.969Z",
+     *           "createdAt": "2019-04-09T16:09:01.969Z",
+     *           "__v": 0
+     *  }
+     * @apiparam {String} userId User's Id
      */
 
-        async getUserProfile(req, res, next) {
-            let user = await User.findOne({ _id: req.params.userId });
-            if (!user) {
-                res.status(httpErrorCodes.BAD_REQUEST)
-                    .json(JsendSerializer.fail('User not found', req.params._id, httpErrorCodes.NOT_FOUND));
-                return;
-            }else {
-                res.status(httpErrorCodes.OK).json(JsendSerializer.success('User retrieved successfully.', user));
-            }
+    async getUserProfile(req, res, next) {
+        let user = await User.findOne({
+            _id: req.params.userId
+        }, '-password -customType');
+        if (!user) {
+            res.status(httpErrorCodes.BAD_REQUEST)
+                .json(JsendSerializer.fail('User not found', req.params._id, httpErrorCodes.NOT_FOUND));
+            return;
+        } else {
+            res.status(httpErrorCodes.OK).json(JsendSerializer.success('User retrieved successfully.', user));
+        }
     }
 
-    // /**
-    //  * @api {get} /user/:userId/update Update a user details
-    //  * @apiName user/update
-    //  * @apiVersion 1.0.0
-    //  * @apiGroup User
-    //  *
-    //  *
-    //  * @apiSuccess {String} accesstoken token.
-    //  *
-    //  * @apiSuccessExample Success-Response:
-    //  *     HTTP/1.1 200 OK
-    //  *     {
-    //  *       status: "success",
-    //  *       data : {
-    //  *              _id: ojqwoijroqpkodpowp,
-    //  *              firstName: John
-    //  *          }
-    //  *     }
-    //  *
-    //  * @apiparam {String} useremail User's Email
-    //  * @apiparam {string} firstname User's firstname
-    //  * @apiparam {string} lastname User's lastname
-    //  * @apiparam {String} user_id User's id
-    //  */
+
 
     async updateUserProfile(req, res, next) {
-        let user = await User.findOne({ _id: req.params.userId });
+        let user = await User.findOne({
+            _id: req.params.userId
+        });
         if (!user) {
             res.status(httpErrorCodes.BAD_REQUEST)
                 .json(JsendSerializer.fail('cannot update profile cause no user found', req.params.useremail, httpErrorCodes.BAD_REQUEST));
@@ -95,4 +87,4 @@ class UserController {
 
 }
 
-    export default new UserController();
+export default new UserController();

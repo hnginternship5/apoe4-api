@@ -65,7 +65,7 @@ import timestamps from 'mongoose-timestamp';
 const registerQuestions = mongoose.model('RegisterQuestion', RegisterQuestionSchema);
 const dailyQuestions = mongoose.model('DailyQuestion', DailyQuestionSchema);
 
- module.exports = {
+module.exports = {
     registerQuestions: registerQuestions,
     dailyQuestions: dailyQuestions,
 };

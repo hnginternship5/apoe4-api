@@ -22,10 +22,30 @@ const UserSchema = new Schema({
         validate: [validator.isEmail, 'Invalid Email Address'],
         required: 'Please enter your email address',
     },
+    phoneNumber: {
+        type: Number,
+        unique: false
+    },
     password: {
         type: String,
         required: 'You must enter a password',
         trim: true,
+    },
+    date_of_birth :{
+        type: String,
+        required:true
+    },
+    weight: {
+        type: String,
+        required: true,
+    },
+    height: {
+        type: String,
+        required: true,
+    },
+    gender: {
+        type: String,
+        required:true,
     },
     active: {
         type: Boolean,

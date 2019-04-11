@@ -19,12 +19,10 @@ const currentEnv = process.env.NODE_ENV || 'development';
 const defaultEnvPath = path.resolve(__dirname, '..', '..', '.env');
 const envPath = defaultEnvPath;
 
-console.log(process.env.NODE_ENV);
-console.log(currentEnv);
+console.log(`Loading .env from '${envPath}'`);
 dotenv.config({
   path: envPath,
 });
-console.log(`Loading .env from '${envPath}'`);
 
 const defaultVars = {
   // env: process.env.NODE_ENV,

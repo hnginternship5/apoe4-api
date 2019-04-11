@@ -3,7 +3,7 @@ export default class JsendSerializer {
         return {
             status: 'success',
             message,
-            code,
+            code: code || 200,
             data
         }
     }

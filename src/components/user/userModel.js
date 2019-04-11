@@ -31,6 +31,22 @@ const UserSchema = new Schema({
         required: 'You must enter a password',
         trim: true,
     },
+    date_of_birth :{
+        type: String,
+        required:true
+    },
+    weight: {
+        type: String,
+        required: true,
+    },
+    height: {
+        type: String,
+        required: true,
+    },
+    gender: {
+        type: String,
+        required:true,
+    },
     active: {
         type: Boolean,
         default: true,

@@ -1,6 +1,5 @@
 import { catchErrors } from '../helpers';
 import authCtrl from '../components/auth/AuthController';
-import   UserController from '../components/user/UserController';
 
 const router = require('express').Router();
 

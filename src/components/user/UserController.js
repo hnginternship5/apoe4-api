@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import User from '../user/userModel';
 import JsendSerializer from '../../util/JsendSerializer';
 import httpErrorCodes from '../../util/httpErrorCodes';

@@ -1,9 +1,9 @@
 define({ "api": [
   {
     "type": "post",
-    "url": "/login",
+    "url": "/auth/login",
     "title": "Login a user",
-    "name": "login",
+    "name": "auth_login",
     "version": "1.0.0",
     "group": "Auth",
     "success": {
@@ -97,9 +97,9 @@ define({ "api": [
   },
   {
     "type": "post",
-    "url": "/register",
+    "url": "/auth/register",
     "title": "Register a user",
-    "name": "register",
+    "name": "auth_register",
     "version": "1.0.0",
     "group": "Auth",
     "success": {

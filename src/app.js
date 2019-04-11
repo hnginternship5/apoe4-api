@@ -6,6 +6,7 @@ import compression from 'compression';
 import config from './config';
 import AppError from './handlers/AppError';
 import path from 'path';
+import expressValidator from "express-validator";
 
 // routers
 import authRouter from './routes/auth';
@@ -25,6 +26,7 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "../public")));
+app.use(expressValidator());
 
 //routes
 app.get('/', (req, res) => res.send('Welcome to APOE4 API!'));
@@ -36,13 +38,16 @@ app.get('/favicon.ico', (req, res) => res.sendStatus(204));
 
 // Match non existing routes
 app.use('*', (req, res, next) => {
-    next(new AppError('Ooops! Nothing here for you!', 400, true));
+    next(new AppError('Invalid url', 400, true));
 });
 
 // Error handlers
 app.use((err, req, res, next) => {
-    if (config.env != 'development') return next(err);
-    console.log("here");
+    console.log(config);
+    if ('development' != `${config.env}`) {
+        console.log("Entered here");
+        return next(err);
+    }
 
     console.log(
         `${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${

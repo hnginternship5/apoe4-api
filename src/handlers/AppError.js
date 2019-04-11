@@ -16,4 +16,4 @@ class AppError {
 
 AppError.constructor.prototype.__proto__ = Error.prototype;
 
-export default AppError;
+module.exports = AppError;

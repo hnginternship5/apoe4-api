@@ -15,8 +15,8 @@ class AuthController {
     }
 
     /**
-     * @api {post} /register Register a user
-     * @apiName register
+     * @api {post} /auth/register Register a user
+     * @apiName auth/register
      * @apiVersion 1.0.0
      * @apiGroup Auth
      *
@@ -76,8 +76,8 @@ class AuthController {
     };
 
     /**
-     * @api {post} /login Login a user
-     * @apiName login
+     * @api {post} /auth/login Login a user
+     * @apiName auth/login
      * @apiVersion 1.0.0
      * @apiGroup Auth
      *
@@ -144,7 +144,7 @@ class AuthController {
                     const errors = JsendSerializer
                         .error(info.message || 'User not found', httpErrorCodes.NOT_FOUND);
 
-                    return res.status(httpErrorCodes.NOT_FOUND).send(errors);
+                    return res.status(httpErrorCodes.NOT_FOUND).json(errors);
                 }
 
                 req.login(
@@ -155,7 +155,7 @@ class AuthController {
                         if (err) {
                             const errors = JsendSerializer
                                 .error('User not found', httpErrorCodes.INTERNAL_SERVER_ERROR);
-                            return res.status(httpErrorCodes.INTERNAL_SERVER_ERROR).send(errors);
+                            return res.status(httpErrorCodes.INTERNAL_SERVER_ERROR).json(errors);
                         }
 
                         const token = this.signToken(user._id);
@@ -184,6 +184,37 @@ class AuthController {
         }, process.env.JWT_SECRET, {
             expiresIn: 86400 * 14, //2 weeks
         });
+    }
+
+    validateRegister(req, res, next) {
+        req.sanitizeBody("firstName");
+        req.sanitizeBody("lastName");
+        req.checkBody("firstName", "first name cannot be blank")
+            .trim()
+            .notEmpty();
+        req.checkBody("lastName", "last name cannot be blank")
+            .trim()
+            .notEmpty();
+        req.checkBody("email", "Email is not valid").isEmail();
+        req.checkBody(
+            "password",
+            "Password must be at least 6 characters long"
+        ).len({
+            min: 6
+        });
+        req.sanitizeBody("email").normalizeEmail({
+            gmail_remove_dots: false,
+            gmail_remove_subaddress: false
+        });
+
+        const errors = req.validationErrors();
+
+        if (errors) {
+            const errorResponse = JsendSerializer
+                .fail('Validation error', errors, httpErrorCodes.BAD_REQUEST);
+            return res.status(httpErrorCodes.BAD_REQUEST).json(errorResponse);
+        }
+        next();
     }
 }
 

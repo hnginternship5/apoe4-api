@@ -19,3 +19,6 @@ To generate documentation:
 ```bash
     npm run apidoc
 ```
+
+## Contributing
+Please make your changes to the  ```dev``` branch.

@@ -3,7 +3,7 @@ const {
   catchErrors,
 } = require('../helpers');
 
-router.post('/login', catchErros(auth.login));
-router.post('/register', catchErrors(auth.register));
+router.get('/:userId', catchErrors(UserController.getUserProfile));
+router.put('/update', catchErrors(UserController.updateUserProfile));
 
 exports = router;

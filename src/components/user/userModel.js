@@ -22,6 +22,10 @@ const UserSchema = new Schema({
         validate: [validator.isEmail, 'Invalid Email Address'],
         required: 'Please enter your email address',
     },
+    phoneNumber: {
+        type: Number,
+        unique: false
+    },
     password: {
         type: String,
         required: 'You must enter a password',

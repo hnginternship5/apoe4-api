@@ -21,7 +21,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"accessToken\": \"oqueoqiniodq...\"\n}",
+          "content": "HTTP/1.1 200 OK\n{\n  \"accessToken\": \"oqueoqiniodq...\",\n   \"userId\": \"ueuoripio3oij5oj3o5jp3\"\n}",
           "type": "json"
         }
       ]

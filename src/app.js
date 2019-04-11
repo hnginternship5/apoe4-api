@@ -43,9 +43,7 @@ app.use('*', (req, res, next) => {
 
 // Error handlers
 app.use((err, req, res, next) => {
-    console.log(config);
-    if ('development' != `${config.env}`) {
-        console.log("Entered here");
+    if ('development' != config.env) {
         return next(err);
     }
 
@@ -68,7 +66,7 @@ app.use((err, req, res, next) => {
     return res.json(errorDetails);
 });
 
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
     if (!err.isOperational) {
         console.log(
             'An unexpected error occurred please restart the application!',

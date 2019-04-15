@@ -57,11 +57,73 @@ const DailyQuestionSchema = new Schema({
     },
 });
 
+const MorningQuestionSchema = new Schema({
+    night: {
+        type: String,
+        enum: ['great', 'good', 'fair', 'bad'],
+        required: true,
+    },
+    why: {
+        type: String
+    },
+    plannedActivities: {
+        type: String,
+        enum: ['running', 'walking', 'gym', 'none'],
+        required: true,
+    },
+    reminders: {
+        type: String,
+        enum: ['Yes', 'No'],
+        required: true,
+    },
+});
+
+const NoonQuestionSchema = new Schema({
+    now: {
+        type: String,
+    },
+    where: {
+        type: String,
+        enum: ['At work', 'At home', 'working from home', 'other']
+    },
+    day: {
+        type: String,
+        enum: ['Awesome', 'Interesting', 'Boring', 'Okay'],
+        required: true,
+    },
+});
+
+const NightQuestionSchema = new Schema({
+    excercise: {
+        type: String,
+        enum: ['Yes', 'No']
+    },
+    day: {
+        type: String,
+        enum: ['great', 'good', 'fair', 'bad'],
+        required: true,
+    },
+    eaten: {
+        type: String,
+        enum: ['1', '2', '3', 'More'],
+        required: true,
+    },
+});
+
+
 
 const registerQuestions = mongoose.model('RegisterQuestion', RegisterQuestionSchema);
 const dailyQuestions = mongoose.model('DailyQuestion', DailyQuestionSchema);
+const morningQuestions = mongoose.model('MorningQuestion', MorningQuestionSchema);
+const noonQuestions = mongoose.model('NoonQuestion', NoonQuestionSchema);
+const nightQuestions = mongoose.model('NightQuestion', NightQuestionSchema);
+
+
 
 module.exports = {
     registerQuestions: registerQuestions,
     dailyQuestions: dailyQuestions,
+    morningQuestions: morningQuestions,
+    noonQuestions: noonQuestions,
+    nightQuestions: nightQuestions,
 };

@@ -2,29 +2,29 @@ import { registerQuestions, dailyQuestions, morningQuestions, nightQuestions, no
 import JsendSerializer from '../../util/JsendSerializer';
 import httpErrorCodes from '../../util/httpErrorCodes';
 
-/**
- * @api {post} /questions/register-question Questions after registeration
- * @apiName questions/register-question
- * @apiVersion 1.0.0
- * @apiGroup Questions
- *
- *
- * @apiSuccess {String} Response Questions registered successfully!
- *
- *
- * @apiError {String} Response An internal Server error has occured!
- *
- *
- * @apiparam {Boolean} familyHistory if User's family has history of Alzheimer's
- * @apiparam {String} dailyActivities User's frequent activities daily
- * @apiparam {Boolean} familiar if user is familiar with Alzheimer's
- * @apiparam {String} variant user's gene variant
- * @apiparam {Boolean} test if user would like suggestions on where to take tests
- * @apiparam {Boolean} highBloodPressure if user has a high blood pressure
- * @apiparam {Date} lastCheckup user's last checkup date
- */
-
 class QuestionController {
+    /**
+     * @api {post} /questions/register-question Questions after registeration
+     * @apiName questions/register-question
+     * @apiVersion 1.0.0
+     * @apiGroup Questions
+     *
+     *
+     * @apiSuccess {String} Response Questions registered successfully!
+     *
+     *
+     * @apiError {String} Response An internal Server error has occured!
+     *
+     *
+     * @apiparam {Boolean} familyHistory if User's family has history of Alzheimer's
+     * @apiparam {String} dailyActivities User's frequent activities daily
+     * @apiparam {Boolean} familiar if user is familiar with Alzheimer's
+     * @apiparam {String} variant user's gene variant
+     * @apiparam {Boolean} test if user would like suggestions on where to take tests
+     * @apiparam {Boolean} highBloodPressure if user has a high blood pressure
+     * @apiparam {Date} lastCheckup user's last checkup date
+     */
+
     async registerQuestions(req, res, next) {
         try {
             const newQuestion = await registerQuestions.create(req.body);

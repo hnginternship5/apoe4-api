@@ -1,7 +1,7 @@
 import passport from 'passport';
 import passportJWT from 'passport-jwt';
 import passportLocalStrategy from 'passport-local';
-var GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
+import { Strategy } from 'passport-google-oauth2';
 import User from '../components/user/userModel';
 import config from '.';
 
@@ -43,7 +43,7 @@ passport.use(
   ),
 );
 
-passport.use(new GoogleStrategy({
+passport.use(new Strategy({
   clientID:     "374980976639-7o7i055m6f2aq1bi5c2gnnljur2k6vmk.apps.googleusercontent.com",
   clientSecret: "8gZL9Eq3Cjos-PQJsPxNpqi4",
   callbackURL: "http://lvh.me:7777/api/v1/auth/google/redirect",

@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 import timestamps from 'mongoose-timestamp';
 
+var enumArray = ['great', 'good', 'fair', 'bad'];
+
 const RegisterQuestionSchema = new Schema({
     owner: {
         type: mongoose.Schema.Types.ObjectId,
@@ -49,12 +51,12 @@ const DailyQuestionSchema = new Schema({
     },
     day: {
         type: String,
-        enum: ['great', 'good', 'fair', 'bad'],
+        enum: enumArray,
         required: true,
     },
     night: {
         type: String,
-        enum: ['great', 'good', 'fair', 'bad'],
+        enum: enumArray,
         required: true,
     },
     plannedActivities: {
@@ -75,7 +77,7 @@ const MorningQuestionSchema = new Schema({
     },
     night: {
         type: String,
-        enum: ['great', 'good', 'fair', 'bad'],
+        enum: enumArray,
         required: true,
     },
     why: {
@@ -125,7 +127,7 @@ const NightQuestionSchema = new Schema({
     },
     day: {
         type: String,
-        enum: ['great', 'good', 'fair', 'bad'],
+        enum: enumArray,
         required: true,
     },
     eaten: {

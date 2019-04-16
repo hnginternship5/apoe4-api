@@ -1,13 +1,13 @@
 import passport from 'passport';
 import passportJWT from 'passport-jwt';
 import passportLocalStrategy from 'passport-local';
+var GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
 import User from '../components/user/userModel';
 import config from '.';
 
 const ExtractJWT = passportJWT.ExtractJwt;
 const JWTStrategy = passportJWT.Strategy;
 const LocalStrategy = passportLocalStrategy.Strategy;
-
 
 passport.use(
   new LocalStrategy({
@@ -42,6 +42,20 @@ passport.use(
     },
   ),
 );
+
+passport.use(new GoogleStrategy({
+  clientID:     "374980976639-7o7i055m6f2aq1bi5c2gnnljur2k6vmk.apps.googleusercontent.com",
+  clientSecret: "8gZL9Eq3Cjos-PQJsPxNpqi4",
+  callbackURL: "http://lvh.me:7777/api/v1/auth/google/redirect",
+  passReqToCallback   : true
+},
+function(request, accessToken, refreshToken, profile, done) {
+  User.findOne({ email: profile.email }, function (err, user) {
+    request.body.owner = user.id
+    return done(err, user);
+  });
+}
+));
 
 passport.use(
   new JWTStrategy({

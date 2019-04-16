@@ -3,6 +3,11 @@ const Schema = mongoose.Schema;
 import timestamps from 'mongoose-timestamp';
 
 const RegisterQuestionSchema = new Schema({
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     familyHistory: {
         type: Boolean,
         default: false,
@@ -37,6 +42,11 @@ const RegisterQuestionSchema = new Schema({
 });
 
 const DailyQuestionSchema = new Schema({
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     day: {
         type: String,
         enum: ['great', 'good', 'fair', 'bad'],
@@ -58,6 +68,11 @@ const DailyQuestionSchema = new Schema({
 });
 
 const MorningQuestionSchema = new Schema({
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     night: {
         type: String,
         enum: ['great', 'good', 'fair', 'bad'],
@@ -79,6 +94,11 @@ const MorningQuestionSchema = new Schema({
 });
 
 const NoonQuestionSchema = new Schema({
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     now: {
         type: String,
     },
@@ -94,6 +114,11 @@ const NoonQuestionSchema = new Schema({
 });
 
 const NightQuestionSchema = new Schema({
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     excercise: {
         type: String,
         enum: ['Yes', 'No']

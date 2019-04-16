@@ -1,3 +1,5 @@
+
+import mongoose from "mongoose";
 /*
   Catch Errors Handler
 
@@ -10,3 +12,8 @@ exports.catchErrors = (fn) => {
       return fn(req, res, next).catch(next);
     };
   };
+
+  exports.reassignOwner = (req, res, next) => {
+    req.body["owner"] = mongoose.Types.ObjectId(req.owner);
+    next();
+  }

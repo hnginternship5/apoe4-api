@@ -87,7 +87,8 @@ class AuthController {
      * @apiSuccessExample Success-Response:
      *     HTTP/1.1 200 OK
      *     {
-     *       "accessToken": "oqueoqiniodq..."
+     *       "accessToken": "oqueoqiniodq...",
+     *        "userId": "ueuoripio3oij5oj3o5jp3"
      *     }
      *
      * @apiError ValidationError for invalid input data
@@ -162,6 +163,7 @@ class AuthController {
 
                         res.json({
                             accessToken: token,
+                            userId: user._id
                         });
 
                     },

@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
-const Schema = mongoose.Schema;
 import timestamps from 'mongoose-timestamp';
 
-var enumArray = ['great', 'good', 'fair', 'bad'];
+const Schema = mongoose.Schema;
+const enumArray = ['great', 'good', 'fair', 'bad'];
 
 const RegisterQuestionSchema = new Schema({
     owner: {
@@ -147,7 +147,7 @@ const nightQuestions = mongoose.model('NightQuestion', NightQuestionSchema);
 
 
 
-module.exports = {
+export default {
     registerQuestions: registerQuestions,
     dailyQuestions: dailyQuestions,
     morningQuestions: morningQuestions,

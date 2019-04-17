@@ -11,6 +11,7 @@ import expressValidator from "express-validator";
 // routers
 import authRouter from './routes/auth';
 import questionRouter from './routes/question';
+import passport from 'passport';
 
 
 const app = express();
@@ -29,6 +30,7 @@ app.use(
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "../public")));
 app.use(expressValidator());
+app.use(passport.initialize())
 
 //routes
 app.get('/', (req, res) => res.send('Welcome to APOE4 API!'));

@@ -174,7 +174,7 @@ class AuthController {
 
     /**
      * @api {post} /auth/google login a user with google
-     * @apiName auth/register
+     * @apiName auth/google
      * @apiVersion 1.0.0
      * @apiGroup Auth
      *

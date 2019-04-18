@@ -71,6 +71,89 @@ define({ "api": [
   },
   {
     "type": "post",
+    "url": "/auth/google",
+    "title": "login a user with google",
+    "name": "auth_google",
+    "version": "1.0.0",
+    "group": "Auth",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "accessToken",
+            "description": "<p>User access token.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"accessToken\": \"oqueoqiniodq...\",\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "ValidationError",
+            "description": "<p>For Invalid data.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "ValidationError-Response:",
+          "content": " HTTP/1.1 400 OK\n{\n  \"status\": \"error\",\n   \"message\": \"...\",\n    \"data\": []\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "firstName",
+            "description": "<p>User's First name</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "lastName",
+            "description": "<p>User's lastname</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>user's email</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "password",
+            "description": "<p>user's password</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/components/auth/AuthController.js",
+    "groupTitle": "Auth"
+  },
+  {
+    "type": "post",
     "url": "/auth/login",
     "title": "Login a user",
     "name": "auth_login",
@@ -250,7 +333,7 @@ define({ "api": [
   },
   {
     "type": "post",
-    "url": "/questions/",
+    "url": "/questions/createQuestion",
     "title": "Creating a question",
     "name": "questions_createQuestion",
     "version": "1.0.0",

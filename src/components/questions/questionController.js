@@ -23,39 +23,39 @@ class QuestionController {
 
 
     async getQuestion(req, res, next) {
-        QuestionModel.Question.find({type:req.body.type}, (err, questions) => {
+        QuestionModel.Question.find({ type: req.body.type }, (err, questions) => {
             if (err) {
                 return res.status(500).json({
                     error: err
                 })
             };
             var dt = new Date();
-                dt.setDate( dt.getDate() - 1 );
-                console.log(dt)
-            questions.map((question)=>{
-                answerModel.Answer.findOne({question:question.id, created: {$lt:dt}})
-                .exec( function (err, answer) {
-                    if (answer == null && !res.headersSent){
-                        return res.status(200).json({
-                            question:question,
-                            error: false
-                        });
-                    }
-                })
+            dt.setDate(dt.getDate() - 1);
+            console.log(dt)
+            questions.map((question) => {
+                answerModel.Answer.findOne({ question: question.id, created: { $lt: dt } })
+                    .exec(function(err, answer) {
+                        if (answer == null && !res.headersSent) {
+                            return res.status(200).json({
+                                question: question,
+                                error: false
+                            });
+                        }
+                    })
             })
-            setTimeout(function (){
-                if (!res.headersSent){
+            setTimeout(function() {
+                if (!res.headersSent) {
                     return res.status(300).json({
-                        msg:"no messages",
+                        msg: "no messages",
                         error: true
-                    })   
+                    })
                 }
-            },3000)
+            }, 3000)
         })
     }
 
     /**
-     * @api {post} /questions/ Creating a question
+     * @api {post} /questions/createQuestion Creating a question
      * @apiName questions/createQuestion
      * @apiVersion 1.0.0
      * @apiGroup Questions

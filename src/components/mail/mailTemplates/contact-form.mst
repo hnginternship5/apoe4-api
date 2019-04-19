@@ -1,0 +1,9 @@
+<html>
+<h3>Hello Admin!</h3>
+<p>You have received an email from {{name}}</p>
+<p>Their email is {{email}}</p>
+<p>The message content was as follows:</p>
+<p>{{message}}</p>
+
+<p>Keep doing an <b>AMAZING</b> job!</p>
+</html>

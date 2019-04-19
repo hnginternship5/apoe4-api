@@ -26,7 +26,7 @@ class MailController {
         try{
             MailModel.validate(req.body)
             const contactMail = new MailModel(req.body);
-            contactMail.sendEmail(contactMail.email,"Contact Request Form","contact-form");
+            contactMail.sendEmail("geneapoe@gmail.com","Contact Request Form","contact-form");
             return res.status(200).json(contactMail)
         }
         catch(err){

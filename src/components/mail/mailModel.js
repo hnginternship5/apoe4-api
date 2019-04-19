@@ -41,7 +41,7 @@ module.exports = class MailModel {
         if (this.isNotEmpty(request.name) &&
             this.isNotEmpty(request.email) &&
             this.isNotEmpty(request.message)) {
-            return true
+            return true;
         } else {
             throw "Missing Email Properties";
         }
@@ -49,7 +49,7 @@ module.exports = class MailModel {
 
     static isNotEmpty(property) {
         if (property === null || property === "" || property === undefined) {
-            return false
+            return false;
         } else {
             return true;
         }

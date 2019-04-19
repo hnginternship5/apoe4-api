@@ -11,6 +11,8 @@ import expressValidator from "express-validator";
 // routers
 import authRouter from './routes/auth';
 import questionRouter from './routes/question';
+import answerRouter from './routes/answer'
+import mailRouter from './routes/mail'
 import passport from 'passport';
 
 
@@ -36,6 +38,8 @@ app.use(passport.initialize())
 app.get('/', (req, res) => res.send('Welcome to APOE4 API!'));
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/questions', questionRouter);
+app.use('/api/v1/answers', answerRouter);
+app.use('/api/v1/mail', mailRouter);
 
 // Handle favicon requests from browsers
 app.get('/favicon.ico', (req, res) => res.sendStatus(204));

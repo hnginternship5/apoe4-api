@@ -172,6 +172,37 @@ class AuthController {
         )(req, res);
     }
 
+    /**
+     * @api {post} /auth/google login a user with google
+     * @apiName auth/google
+     * @apiVersion 1.0.0
+     * @apiGroup Auth
+     *
+     *
+     * @apiSuccess {String} accessToken User access token.
+     *
+     * @apiSuccessExample Success-Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *       "accessToken": "oqueoqiniodq...",
+     *     }
+     *
+     * @apiError ValidationError For Invalid data.
+     *
+     * @apiErrorExample ValidationError-Response:
+     *      HTTP/1.1 400 OK
+     *     {
+     *       "status": "error",
+     *        "message": "...",
+     *         "data": []
+     *     }
+     *
+     * @apiparam {String} firstName User's First name
+     * @apiparam {String} lastName User's lastname
+     * @apiparam {String} email user's email
+     * @apiparam {String} password user's password
+     */
+
     signToken(id) {
         return jwt.sign({
             id

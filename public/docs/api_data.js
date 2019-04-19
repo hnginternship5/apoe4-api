@@ -333,6 +333,132 @@ define({ "api": [
   },
   {
     "type": "post",
+    "url": "/mails/contact-form",
+    "title": "Send a contact request form",
+    "name": "mails_",
+    "version": "1.0.0",
+    "group": "Mails",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Contact",
+            "description": "<p>Request was Successful!</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "Response",
+            "description": "<p>An internal Server error has occured!</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Name of the person who wants to be contacted</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>Email of the person who wants to be contacted</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": "<p>Message of the person who is sending the request.</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/components/mail/mailController.js",
+    "groupTitle": "Mails"
+  },
+  {
+    "type": "post",
+    "url": "/mails/subscribe-chimp",
+    "title": "Subscribes the information to our mailchimp",
+    "name": "mails_",
+    "version": "1.0.0",
+    "group": "Mails",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Success",
+            "description": "<p>Response Message!</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "Response",
+            "description": "<p>A response of error code 400 from mailchimp servers!</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "first_name",
+            "description": "<p>First Name of the person who wants to be contacted.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "last_name",
+            "description": "<p>Last Name of the person who wants to be contacted.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>Email Address of the person wants to be contacted.</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/components/mail/mailController.js",
+    "groupTitle": "Mails"
+  },
+  {
+    "type": "post",
     "url": "/questions/createQuestion",
     "title": "Creating a question",
     "name": "questions_createQuestion",

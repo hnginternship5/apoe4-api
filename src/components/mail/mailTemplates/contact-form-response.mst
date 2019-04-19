@@ -1,0 +1,7 @@
+<html>
+<h3>Dear {{name}},</h3>
+<p>Thank you for contacting us.</p>
+</p>We take our users very seriously, and someone from our team will be in touch with you within 24 hours</p>
+<p>Best,</p>
+<p>APOE4 Support Team</p>
+</html>

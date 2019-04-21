@@ -31,6 +31,9 @@ const UserSchema = new Schema({
         required: 'You must enter a password',
         trim: true,
     },
+    dob: {
+        type: Date,
+    },
     active: {
         type: Boolean,
         default: true,
@@ -57,6 +60,7 @@ const UserSchema = new Schema({
     resetPasswordExpires: Date,
 });
 
+
 UserSchema.plugin(timestamps, {
     createdAt: {
         index: true,
@@ -66,12 +70,12 @@ UserSchema.plugin(timestamps, {
     },
 });
 
-UserSchema.virtual('fullName').get(function () {
+UserSchema.virtual('fullName').get(function() {
     return `${this.firstName} ${this.lastName}`;
 });
 
 // Hash password
-UserSchema.pre('save', function (next) {
+UserSchema.pre('save', function(next) {
     if (!this.isModified('password')) return next();
     this.password = this.encryptPassword(this.password);
     next();
@@ -83,10 +87,14 @@ UserSchema.methods = {
         const salt = bcrypt.genSaltSync(10);
         return bcrypt.hashSync(plainTextWord, salt);
     },
-    comparePassword: function (password) {
+    comparePassword: function(password) {
         return bcrypt.compareSync(password, this.password);
     },
 };
 
 
-module.exports = mongoose.model('User', UserSchema);
+const User = mongoose.model('User', UserSchema);
+
+export default {
+    User: User,
+};

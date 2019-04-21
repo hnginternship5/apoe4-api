@@ -324,6 +324,13 @@ define({ "api": [
             "optional": false,
             "field": "password",
             "description": "<p>user's password</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Date",
+            "optional": false,
+            "field": "dob",
+            "description": "<p>user's Date of birth</p>"
           }
         ]
       }

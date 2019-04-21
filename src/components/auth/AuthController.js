@@ -3,7 +3,7 @@ import httpErrorCodes from '../../util/httpErrorCodes';
 import JsendSerializer from '../../util/JsendSerializer';
 import AppError from '../../handlers/AppError';
 import passport from '../../config/passport';
-import User from '../user/userModel';
+import { User, Dob } from '../user/userModel';
 
 /**
  * @module AuthController
@@ -43,6 +43,8 @@ class AuthController {
      * @apiparam {String} lastName User's lastname
      * @apiparam {String} email user's email
      * @apiparam {String} password user's password
+     * @apiparam {Date} dob user's Date of birth
+     *
      */
     async register(req, res, next) {
         let existingUser = await User.findOne({
@@ -163,6 +165,9 @@ class AuthController {
 
                         res.json({
                             accessToken: token,
+                            firstName: user.firstName,
+                            lastName: user.lastName,
+                            email: user.email,
                             userId: user._id
                         });
 

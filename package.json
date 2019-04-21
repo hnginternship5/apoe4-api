@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/index.js",
     "serve": "nodemon --exec babel-node src/server.js",
-    "build": "./node_modules/.bin/babel ./src --out-dir ./dist --ignore node_modules",
+    "build": "./node_modules/.bin/babel ./src --out-dir ./dist --ignore node_modules --copy-files",
     "dev": "npm run build && nodemon dist/index.js",
     "watch": "nodemon --exec babel-node src/index.js",
     "apidoc": "apidoc -i src -o public/docs/"

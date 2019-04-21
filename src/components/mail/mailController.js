@@ -39,7 +39,7 @@ class MailController {
 
     /**
      * @api {post} /mails/subscribe-chimp Subscribes the information to our mailchimp
-     * @apiName mails/
+     * @apiName mails/subscribe-chimp
      * @apiVersion 1.0.0
      * @apiGroup Mails
      *
@@ -50,8 +50,6 @@ class MailController {
      * @apiError {String} Response A response of error code 400 from mailchimp servers!
      *
      *
-     * @apiparam {String} first_name First Name of the person who wants to be contacted.
-     * @apiparam {String} last_name Last Name of the person who wants to be contacted.
      * @apiparam {String} email Email Address of the person wants to be contacted.
      */
     async subscribeChimp(req,res){
@@ -63,11 +61,7 @@ class MailController {
             body: JSON.stringify({
                     "email_address":req.body.email,
                     "status_if_new":"subscribed",
-                    "status":"subscribed",
-                    "merge_fields": {
-                        "FNAME":req.body.first_name,
-                        "LNAME":req.body.last_name
-                    }
+                    "status":"subscribed"
             }),
             method: 'POST',
             headers: {
@@ -81,7 +75,7 @@ class MailController {
             }
             else {
                 if (response.statusCode===200){
-                    return res.status(200).json({"message":"Successfully Subscribed to Mailchimp Newsletter!","response":response})
+                    return res.status(200).json(JSON.parse(response.body))
                 }
                 else {
                     res.status(400).json(JSON.parse(response.body))

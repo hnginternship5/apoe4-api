@@ -398,7 +398,7 @@ define({ "api": [
     "type": "post",
     "url": "/mails/subscribe-chimp",
     "title": "Subscribes the information to our mailchimp",
-    "name": "mails_",
+    "name": "mails_subscribe_chimp",
     "version": "1.0.0",
     "group": "Mails",
     "success": {
@@ -430,20 +430,6 @@ define({ "api": [
     "parameter": {
       "fields": {
         "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "first_name",
-            "description": "<p>First Name of the person who wants to be contacted.</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "last_name",
-            "description": "<p>Last Name of the person who wants to be contacted.</p>"
-          },
           {
             "group": "Parameter",
             "type": "String",

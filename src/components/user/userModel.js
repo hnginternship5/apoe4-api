@@ -57,6 +57,33 @@ const UserSchema = new Schema({
     resetPasswordExpires: Date,
 });
 
+const DobSchema = new Schema({
+    dob: {
+        type: Date,
+    },
+    user: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
+    },
+});
+
+const WhgSchema = new Schema({
+    weight: {
+        type: Number,
+    },
+    Height: {
+        type: String,
+    },
+    gender: {
+        type: String,
+    },
+    user: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
+    },
+});
+
+
 UserSchema.plugin(timestamps, {
     createdAt: {
         index: true,
@@ -66,12 +93,12 @@ UserSchema.plugin(timestamps, {
     },
 });
 
-UserSchema.virtual('fullName').get(function () {
+UserSchema.virtual('fullName').get(function() {
     return `${this.firstName} ${this.lastName}`;
 });
 
 // Hash password
-UserSchema.pre('save', function (next) {
+UserSchema.pre('save', function(next) {
     if (!this.isModified('password')) return next();
     this.password = this.encryptPassword(this.password);
     next();
@@ -83,10 +110,21 @@ UserSchema.methods = {
         const salt = bcrypt.genSaltSync(10);
         return bcrypt.hashSync(plainTextWord, salt);
     },
-    comparePassword: function (password) {
+    comparePassword: function(password) {
         return bcrypt.compareSync(password, this.password);
     },
 };
 
 
-module.exports = mongoose.model('User', UserSchema);
+const User = mongoose.model('User', UserSchema);
+const Dob = mongoose.model('Dob', DobSchema);
+const Whg = mongoose.model('Whg', WhgSchema);
+
+
+
+export default {
+    User: User,
+    Dob: Dob,
+    Whg: Whg,
+
+};

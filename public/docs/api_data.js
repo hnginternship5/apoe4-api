@@ -71,6 +71,62 @@ define({ "api": [
   },
   {
     "type": "post",
+    "url": "/auth/dob",
+    "title": "inputing a Date of birth",
+    "name": "auth_dob",
+    "version": "1.0.0",
+    "group": "Auth",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Response",
+            "description": "<p>Dob Created.</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "Response",
+            "description": "<p>An internal Server error has occured!</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Date",
+            "optional": false,
+            "field": "dob",
+            "description": "<p>User's date of birth</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "user",
+            "description": "<p>id of user model</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/components/auth/AuthController.js",
+    "groupTitle": "Auth"
+  },
+  {
+    "type": "post",
     "url": "/auth/google",
     "title": "login a user with google",
     "name": "auth_google",
@@ -333,6 +389,76 @@ define({ "api": [
   },
   {
     "type": "post",
+    "url": "/auth/whg",
+    "title": "inputing Weight Height and gender",
+    "name": "auth_whg",
+    "version": "1.0.0",
+    "group": "Auth",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Response",
+            "description": "<p>WHG Created.</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "Response",
+            "description": "<p>An internal Server error has occured!</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "weight",
+            "description": "<p>User's weight</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "Height",
+            "description": "<p>User's height</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "Gender",
+            "description": "<p>User's Gender</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "user",
+            "description": "<p>id of user model</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/components/auth/AuthController.js",
+    "groupTitle": "Auth"
+  },
+  {
+    "type": "post",
     "url": "/mails/contact-form",
     "title": "Send a contact request form",
     "name": "mails_",
@@ -458,7 +584,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "Response",
-            "description": "<p>Questions registered successfully!</p>"
+            "description": "<p>Questions Created.</p>"
           }
         ]
       }

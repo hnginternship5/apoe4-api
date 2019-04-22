@@ -31,9 +31,6 @@ const UserSchema = new Schema({
         required: 'You must enter a password',
         trim: true,
     },
-    dob: {
-        type: Date,
-    },
     active: {
         type: Boolean,
         default: true,
@@ -58,6 +55,32 @@ const UserSchema = new Schema({
     linkedin: String,
     resetPasswordToken: String,
     resetPasswordExpires: Date,
+});
+
+const DobSchema = new Schema({
+    dob: {
+        type: Date,
+    },
+    user: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
+    },
+});
+
+const WhgSchema = new Schema({
+    weight: {
+        type: Number,
+    },
+    Height: {
+        type: String,
+    },
+    gender: {
+        type: String,
+    },
+    user: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
+    },
 });
 
 
@@ -94,7 +117,14 @@ UserSchema.methods = {
 
 
 const User = mongoose.model('User', UserSchema);
+const Dob = mongoose.model('Dob', DobSchema);
+const Whg = mongoose.model('Whg', WhgSchema);
+
+
 
 export default {
     User: User,
+    Dob: Dob,
+    Whg: Whg,
+
 };

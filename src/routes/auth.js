@@ -36,5 +36,7 @@ router.get('/google/redirect',
     });
 router.post('/register', authCtrl.validateRegister, catchErrors(authCtrl.register));
 router.post('/dob', catchErrors(authCtrl.dob));
+router.post('/whg', catchErrors(authCtrl.whg));
+
 
 export default router;

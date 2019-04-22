@@ -22,7 +22,7 @@ router.post('/forgot', function(req, res, next) {
         function(token, done) {
             User.findOne({ email: req.body.email }, function(err, user) {
                 if (!user) {
-                    next(new AppError('An error occured creating user', httpErrorCodes.INTERNAL_SERVER_ERROR, true));
+                    req.flash('error', 'No account with that email address exists.');
                     return res.redirect('/forgot');
                 }
 

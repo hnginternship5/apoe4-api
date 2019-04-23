@@ -34,13 +34,13 @@ class QuestionController {
             console.log(dt)
             console.log(`Owner: ${req.owner}`)
             questions.map((question) => {
-                answerModel.Answer.findOne({ question: question.id, created: { $gt: dt }, owner: req.owner })
+                answerModel.Answer.findOne({ question: question.id, created: { $gt: dt },owner:req.owner })
                     .exec(function(err, answer) {
                         if (answer == null && !res.headersSent) {
                             return res.status(200).json({
                                 question: question,
                                 error: false,
-                                status: 0
+                                status:0
                             });
                         }
                     })
@@ -50,7 +50,7 @@ class QuestionController {
                     return res.status(300).json({
                         msg: "No more questions available",
                         error: true,
-                        status: 1
+                        status:1
                     })
                 }
             }, 3000)
@@ -64,7 +64,7 @@ class QuestionController {
      * @apiGroup Questions
      *
      *
-     * @apiSuccess {String} Response Questions Created.
+     * @apiSuccess {String} Response Questions registered successfully!
      *
      *
      * @apiError {String} Response An internal Server error has occured!

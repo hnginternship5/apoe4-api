@@ -3,7 +3,8 @@ import httpErrorCodes from '../../util/httpErrorCodes';
 import JsendSerializer from '../../util/JsendSerializer';
 import AppError from '../../handlers/AppError';
 import passport from '../../config/passport';
-import User from '../user/userModel';
+import { User, Dob, Whg } from '../user/userModel';
+
 
 /**
  * @module AuthController

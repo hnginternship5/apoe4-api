@@ -51,9 +51,10 @@ router.post('/forgot', function(req, res, next) {
         },
         function(token, user, done) {
             var smtpTransport = nodemailer.createTransport({
-                service: 'smtp.gmail.com',
+                service: 'gmail',
+                host: 'smtp.gmail.com',
                 port: 465,
-                secure: false,
+                secure: true,
                 auth: {
                     user: 'geneapoe@gmail.com',
                     pass: 'apoe4gene'

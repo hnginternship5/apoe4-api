@@ -122,9 +122,8 @@ const Whg = mongoose.model('Whg', WhgSchema);
 
 
 
-export default {
-    User: User,
-    Dob: Dob,
-    Whg: Whg,
-
+export {
+    User,
+    Dob,
+    Whg,
 };

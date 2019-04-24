@@ -127,6 +127,60 @@
   },
   {
     "type": "post",
+    "url": "/auth/forgot",
+    "title": "User forgot password",
+    "name": "auth_forgot",
+    "version": "1.0.0",
+    "group": "Auth",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "optional": false,
+            "field": "An",
+            "description": "<p>email is sent to user with a link and token.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\nAn e-mail has been sent to user@email.com with further instructions.",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "error",
+            "description": "<p>for invalid email</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>user email</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/routes/forgot.js",
+    "groupTitle": "Auth"
+  },
+  {
+    "type": "post",
     "url": "/auth/google",
     "title": "login a user with google",
     "name": "auth_google",
@@ -385,6 +439,67 @@
       }
     },
     "filename": "src/components/auth/AuthController.js",
+    "groupTitle": "Auth"
+  },
+  {
+    "type": "post",
+    "url": "/auth/reset/:token",
+    "title": "Reset a user's password",
+    "name": "auth_reset__token",
+    "version": "1.0.0",
+    "group": "Auth",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "optional": false,
+            "field": "An",
+            "description": "<p>email is sent to user with a link and token</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n  Success! Your password has been changed.",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "ValidationError",
+            "description": "<p>for invalid input data</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "ValidationError-Response:",
+          "content": "HTTP/1.1 400 Bad Request\n  Password reset token is invalid or has expired.",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "password",
+            "description": "<p>User's new password</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/routes/forgot.js",
     "groupTitle": "Auth"
   },
   {

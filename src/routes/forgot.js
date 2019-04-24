@@ -1,15 +1,30 @@
-import jwt from 'jsonwebtoken';
-import httpErrorCodes from '../../util/httpErrorCodes';
-import JsendSerializer from '../../util/JsendSerializer';
-import AppError from '../../handlers/AppError';
-import passport from '../../config/passport';
-import { User } from '../user/userModel';
+import passport from '../config/passport';
+import { User } from '../components/user/userModel';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import async from 'async';
 import flash from 'express-flash';
 
 const router = require('express').Router();
+
+/**
+ * @api {post} /auth/forgot User forgot password
+ * @apiName auth/forgot
+ * @apiVersion 1.0.0
+ * @apiGroup Auth
+ *
+ *
+ * @apiSuccess An email is sent to user with a link and token.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     An e-mail has been sent to user@email.com with further instructions.
+ *
+ * @apiError error for invalid email
+ *
+ *
+ * @apiparam {String} email user email
+ */
 
 router.post('/forgot', function(req, res, next) {
     async.waterfall([
@@ -35,10 +50,10 @@ router.post('/forgot', function(req, res, next) {
             });
         },
         function(token, user, done) {
-            var smtpTransport = nodeMailer.createTransport({
-                host: 'smtp.gmail.com',
+            var smtpTransport = nodemailer.createTransport({
+                service: 'smtp.gmail.com',
                 port: 465,
-                secure: true,
+                secure: false,
                 auth: {
                     user: 'geneapoe@gmail.com',
                     pass: 'apoe4gene'
@@ -48,9 +63,9 @@ router.post('/forgot', function(req, res, next) {
                 to: user.email,
                 from: 'geneapoe@gmail.com',
                 subject: 'Apoe4 Password Reset',
-                text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+                text: 'You are receiving this because you (or someone else) have requested the reset of the password for your Apoe4 account.\n\n' +
                     'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-                    'https://' + req.headers.host + '/reset/' + token + '\n\n' +
+                    'http://' + req.headers.host + '/reset/' + token + '\n\n' +
                     'If you did not request this, please ignore this email and your password will remain unchanged.\n'
             };
             smtpTransport.sendMail(mailOptions, function(err) {
@@ -64,7 +79,7 @@ router.post('/forgot', function(req, res, next) {
     });
 });
 
-app.get('/reset/:token', function(req, res) {
+router.get('/reset/:token', function(req, res) {
     User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
         if (!user) {
             req.flash('error', 'Password reset token is invalid or has expired.');
@@ -77,7 +92,29 @@ app.get('/reset/:token', function(req, res) {
     });
 });
 
-app.post('/reset/:token', function(req, res) {
+/**
+ * @api {post} /auth/reset/:token Reset a user's password
+ * @apiName auth/reset/:token
+ * @apiVersion 1.0.0
+ * @apiGroup Auth
+ *
+ *
+ * @apiSuccess An email is sent to user with a link and token
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *       Success! Your password has been changed.
+ *     
+ * @apiError ValidationError for invalid input data
+ *
+ * @apiErrorExample ValidationError-Response:
+ *     HTTP/1.1 400 Bad Request
+ *       Password reset token is invalid or has expired.
+ *
+ * @apiparam {String} password User's new password
+ */
+
+router.post('/reset/:token', function(req, res) {
     async.waterfall([
         function(done) {
             User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
@@ -98,7 +135,7 @@ app.post('/reset/:token', function(req, res) {
             });
         },
         function(user, done) {
-            var smtpTransport = nodeMailer.createTransport({
+            var smtpTransport = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
                 port: 465,
                 secure: true,
@@ -123,3 +160,5 @@ app.post('/reset/:token', function(req, res) {
         res.redirect('/');
     });
 });
+
+export default router;

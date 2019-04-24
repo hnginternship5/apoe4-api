@@ -4,8 +4,7 @@ import JsendSerializer from '../../util/JsendSerializer';
 import AppError from '../../handlers/AppError';
 import passport from '../../config/passport';
 import { User, Dob, Whg } from '../user/userModel';
-import crypto from 'crypto';
-import nodemailer from 'nodemailer';
+
 
 /**
  * @module AuthController

@@ -7,6 +7,7 @@ import config from './config';
 import AppError from './handlers/AppError';
 import path from 'path';
 import expressValidator from "express-validator";
+import session from 'express-session';
 
 // routers
 import authRouter from './routes/auth';
@@ -25,6 +26,7 @@ app.use(
         maxAge: 1728000,
     }),
 );
+app.use(session({ secret: 'qwertyhbvcdtyjnb' }));
 app.use(morganLogger('dev'));
 app.use(
     bodyParser.urlencoded({
@@ -43,7 +45,7 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/questions', questionRouter);
 app.use('/api/v1/answers', answerRouter);
 app.use('/api/v1/mail', mailRouter);
-app.use('/api/v1', forgotRouter);
+app.use('/api/v1/auth', forgotRouter);
 
 // Handle favicon requests from browsers
 app.get('/favicon.ico', (req, res) => res.sendStatus(204));

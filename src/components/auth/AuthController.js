@@ -44,7 +44,6 @@ class AuthController {
      * @apiparam {String} lastName User's lastname
      * @apiparam {String} email user's email
      * @apiparam {String} password user's password
-     *
      */
     async register(req, res, next) {
         let existingUser = await User.findOne({
@@ -52,7 +51,7 @@ class AuthController {
         });
         if (existingUser) {
             res.status(httpErrorCodes.BAD_REQUEST)
-                .json(JsendSerializer.fail('email already taken', req.body.email, httpErrorCodes.ACCEPTED));
+                .json(JsendSerializer.fail('email already taken', req.body.email, httpErrorCodes.BAD_REQUEST));
             return;
         }
 
@@ -73,65 +72,8 @@ class AuthController {
 
             res.json({
                 accessToken: token,
-                userId: user._id
             });
         });
-    };
-
-    /**
-     * @api {post} /auth/dob inputing a Date of birth
-     * @apiName auth/dob
-     * @apiVersion 1.0.0
-     * @apiGroup Auth
-     *
-     *
-     * @apiSuccess {String} Response Dob Created.
-     *
-     *
-     * @apiError {String} Response An internal Server error has occured!
-     *
-     *
-     * @apiparam {Date} dob User's date of birth
-     * @apiparam {String} user id of user model
-     */
-
-    async dob(req, res, next) {
-        try {
-            const DOB = await Dob.Dob.create(req.body);
-            return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Dob created!', DOB, 201));
-        } catch (err) {
-            console.log(err)
-            return res.status(httpErrorCodes.INTERNAL_SERVER_ERROR).json(JsendSerializer.fail('An internal Server error has occured!', err, 500));
-        }
-    };
-
-    /**
-     * @api {post} /auth/whg inputing Weight Height and gender
-     * @apiName auth/whg
-     * @apiVersion 1.0.0
-     * @apiGroup Auth
-     *
-     *
-     * @apiSuccess {String} Response WHG Created.
-     *
-     *
-     * @apiError {String} Response An internal Server error has occured!
-     *
-     *
-     * @apiparam {Number} weight User's weight
-     * @apiparam {String} Height User's height
-     * @apiparam {String} Gender User's Gender
-     * @apiparam {String} user id of user model
-     */
-
-    async whg(req, res, next) {
-        try {
-            const WHG = await Whg.Whg.create(req.body);
-            return res.status(httpErrorCodes.OK).json(JsendSerializer.success('WHG created!', WHG, 201));
-        } catch (err) {
-            console.log(err)
-            return res.status(httpErrorCodes.INTERNAL_SERVER_ERROR).json(JsendSerializer.fail('An internal Server error has occured!', err, 500));
-        }
     };
 
     /**
@@ -222,9 +164,6 @@ class AuthController {
 
                         res.json({
                             accessToken: token,
-                            firstName: user.firstName,
-                            lastName: user.lastName,
-                            email: user.email,
                             userId: user._id
                         });
 
@@ -311,8 +250,6 @@ class AuthController {
         }
         next();
     }
-
-
 }
 
 export default new AuthController();

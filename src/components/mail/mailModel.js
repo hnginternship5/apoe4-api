@@ -1,6 +1,6 @@
-import nodeMailer from 'nodemailer';
-import mustache from 'mustache';
-import fs from 'fs';
+import nodeMailer from 'nodemailer'
+import mustache from 'mustache'
+import fs from 'fs'
 const path = require("path");
 
 module.exports = class MailModel {
@@ -10,7 +10,7 @@ module.exports = class MailModel {
         this.message = request.message;
     }
 
-    sendEmail(to, subject, template) {
+    sendEmail(to,subject,template) {
         template = `/mailTemplates/${template}.mst`
 
         let transporter = nodeMailer.createTransport({
@@ -27,7 +27,7 @@ module.exports = class MailModel {
             to: to,
             subject: subject,
             html: mustache.render(
-                fs.readFileSync(path.resolve(__dirname) + template).toString(), this),
+                fs.readFileSync(path.resolve(__dirname)+template).toString(), this),
         };
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {

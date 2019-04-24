@@ -12,11 +12,9 @@ import session from 'express-session';
 // routers
 import authRouter from './routes/auth';
 import questionRouter from './routes/question';
-import forgotRouter from './routes/forgot';
-import answerRouter from './routes/answer';
-import mailRouter from './routes/mail';
+import answerRouter from './routes/answer'
+import mailRouter from './routes/mail'
 import passport from 'passport';
-import flash from 'express-flash';
 
 
 const app = express();
@@ -34,7 +32,6 @@ app.use(
     }),
 );
 app.use(bodyParser.json());
-app.use(flash());
 app.use(express.static(path.join(__dirname, "../public")));
 app.use(expressValidator());
 app.use(passport.initialize())

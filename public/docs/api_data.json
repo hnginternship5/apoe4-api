@@ -71,6 +71,7 @@
   },
   {
     "type": "post",
+<<<<<<< HEAD
     "url": "/auth/dob",
     "title": "inputing a Date of birth",
     "name": "auth_dob",
@@ -181,6 +182,8 @@
   },
   {
     "type": "post",
+=======
+>>>>>>> 9cb8a4daaa281773974f7f214e68e82f612ec035
     "url": "/auth/google",
     "title": "login a user with google",
     "name": "auth_google",
@@ -443,6 +446,7 @@
   },
   {
     "type": "post",
+<<<<<<< HEAD
     "url": "/auth/reset/:token",
     "title": "Reset a user's password",
     "name": "auth_reset__token",
@@ -574,6 +578,8 @@
   },
   {
     "type": "post",
+=======
+>>>>>>> 9cb8a4daaa281773974f7f214e68e82f612ec035
     "url": "/mails/contact-form",
     "title": "Send a contact request form",
     "name": "mails_",
@@ -699,7 +705,7 @@
             "type": "String",
             "optional": false,
             "field": "Response",
-            "description": "<p>Questions Created.</p>"
+            "description": "<p>Questions registered successfully!</p>"
           }
         ]
       }

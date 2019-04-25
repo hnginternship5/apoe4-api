@@ -4,20 +4,12 @@ import helpers from '../helpers';
 import QuestionController from '../components/questions/questionController';
 
 const questionRouter = Router();
-//post questions after register
-questionRouter.post('/register-question',checkAuth,helpers.reassignOwner, QuestionController.registerQuestions);
 
-// //post daily questions
-// questionRouter.post('/daily-question', QuestionController.dailyQuestions);
+questionRouter.post('/getQuestion',checkAuth, QuestionController.getQuestion);
 
-//post morning questions
-questionRouter.post('/morning-question',checkAuth,helpers.reassignOwner, QuestionController.morningQuestions);
+//Create Questions
+questionRouter.post('/createQuestion',checkAuth, QuestionController.createQuestion);
 
-//post noon questions
-questionRouter.post('/noon-question',checkAuth,helpers.reassignOwner, QuestionController.noonQuestions);
-
-//post night questions
-questionRouter.post('/night-question',checkAuth,helpers.reassignOwner, QuestionController.nightQuestions);
 
 
 module.exports = questionRouter;

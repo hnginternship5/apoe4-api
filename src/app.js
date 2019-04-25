@@ -42,10 +42,10 @@ app.use(passport.initialize())
 //routes
 app.get('/', (req, res) => res.send('Welcome to APOE4 API!'));
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/auth', forgotRouter);
 app.use('/api/v1/questions', questionRouter);
 app.use('/api/v1/answers', answerRouter);
 app.use('/api/v1/mail', mailRouter);
-app.use('/api/v1/auth', forgotRouter);
 
 // Handle favicon requests from browsers
 app.get('/favicon.ico', (req, res) => res.sendStatus(204));

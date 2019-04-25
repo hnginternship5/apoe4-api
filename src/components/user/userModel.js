@@ -110,10 +110,11 @@ UserSchema.methods = {
         return bcrypt.hashSync(plainTextWord, salt);
     },
     comparePassword: function (password) {
-        return bcrypt.compareSync(password, this.password);
+        const data =  bcrypt.compareSync(password, this.password);
+        return data;
     },
 };
 
 export const Dob = mongoose.model('Dob', DobSchema);
 export const Whg = mongoose.model('Whg', WhgSchema);
-module.exports = mongoose.model('User', UserSchema);
+export default  mongoose.model('User', UserSchema);

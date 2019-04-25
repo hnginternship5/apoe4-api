@@ -45,7 +45,7 @@ forgotRouter.post('/forgot', (req, res) => {
         });
         },
         function(user, token, done) {
-        User.findByIdAndUpdate({ _id: user._id }, { reset_password_token: token, reset_password_expires: Date.now() + 86400000 }, { upsert: true, new: true }).exec(function(err, new_user) {
+        User.findByIdAndUpdate({ _id: user._id }, {resetPasswordToken: token, resetPasswordExpires: Date.now() + 86400000 }, { upsert: true, new: true }).exec(function(err, new_user) {
             done(err, token, new_user);
         });
         },
@@ -56,7 +56,7 @@ forgotRouter.post('/forgot', (req, res) => {
             template: 'forgot-password-email',
             subject: 'Reset Password!',
             context: {
-            url: `${req.headers.host}/auth/reset_password?token=${token}`,
+            url: `${req.headers.host}/api/v1/auth/reset/${token}`,
             name: user.fullName.split(' ')[0]
             }
         };
@@ -72,6 +72,74 @@ forgotRouter.post('/forgot', (req, res) => {
     ], function(err) {
         return res.status(422).json({ message: err });
     });
+});
+
+forgotRouter.get('/reset/:token', (req, res) => {
+    User.findOne({
+        resetPasswordToken: req.params.token,
+        resetPasswordExpires: {
+          $gt: Date.now()
+        }
+      }).exec(function(err, user) {
+        if (user) {
+            return res.status(200).json({
+                message: 'Use a POST request with this same endpoint and include newPassword and verifyPassword as a body parameter',
+            })
+        }
+        return res.status(400).json({
+            message: 'Invalid token!',
+        });
+      });
+});
+
+forgotRouter.post('/reset/:token', (req, res) => {
+    User.findOne({
+        resetPasswordToken: req.params.token,
+        resetPasswordExpires: {
+          $gt: Date.now()
+        }
+      }).exec(function(err, user) {
+        if (!err && user) {
+          if (req.body.newPassword === req.body.verifyPassword) {
+            user.password = req.body.newPassword;
+            user.resetPasswordExpires = undefined;
+            user.resetPasswordToken = undefined;
+            user.save(function(err) {
+              if (err) {
+                return res.status(500).send({
+                  message: err
+                });
+              } else {
+                const data = {
+                  to: user.email,
+                  from: email,
+                  template: 'reset-password',
+                  subject: 'Password Reset Confirmation',
+                  context: {
+                    name: user.fullName.split(' ')[0]
+                  }
+                };
+    
+                smtpTransport.sendMail(data, function(err) {
+                  if (!err) {
+                    return res.json({ message: 'Password has been reset!' });
+                  } else {
+                    return done(err);
+                  }
+                });
+              }
+            });
+          } else {
+            return res.status(422).send({
+              message: 'Passwords do not match'
+            });
+          }
+        } else {
+          return res.status(400).send({
+            message: 'Password reset token is invalid or has expired.'
+          });
+        }
+      });
 });
 
 export default forgotRouter;

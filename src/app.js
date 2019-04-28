@@ -7,13 +7,16 @@ import config from './config';
 import AppError from './handlers/AppError';
 import path from 'path';
 import expressValidator from "express-validator";
+import session from 'express-session';
 
 // routers
 import authRouter from './routes/auth';
 import questionRouter from './routes/question';
-import answerRouter from './routes/answer'
-import mailRouter from './routes/mail'
+import forgotRouter from './routes/forgot';
+import answerRouter from './routes/answer';
+import mailRouter from './routes/mail';
 import passport from 'passport';
+import flash from 'express-flash';
 
 
 const app = express();
@@ -23,6 +26,7 @@ app.use(
         maxAge: 1728000,
     }),
 );
+app.use(session({ secret: 'qwertyhbvcdtyjnb' }));
 app.use(morganLogger('dev'));
 app.use(
     bodyParser.urlencoded({
@@ -30,6 +34,7 @@ app.use(
     }),
 );
 app.use(bodyParser.json());
+app.use(flash());
 app.use(express.static(path.join(__dirname, "../public")));
 app.use(expressValidator());
 app.use(passport.initialize())
@@ -37,6 +42,7 @@ app.use(passport.initialize())
 //routes
 app.get('/', (req, res) => res.send('Welcome to APOE4 API!'));
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/auth', forgotRouter);
 app.use('/api/v1/questions', questionRouter);
 app.use('/api/v1/answers', answerRouter);
 app.use('/api/v1/mail', mailRouter);

@@ -168,7 +168,6 @@ class AuthController {
 
                        let dob = null;
                        let whg = null;
-                        console.log(findUserDob.user);
                        if (findUserDob._id != undefined) {
                            dob = findUserDob;
                        }

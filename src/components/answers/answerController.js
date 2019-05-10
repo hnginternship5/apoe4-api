@@ -33,25 +33,25 @@ class AnswerController {
             req.body.created = newDate;
             scoreLogModel.ScoreLog.findOne({
                 created: newDate
-            }, async function (err, scoreLog) {
+            }, async function(err, scoreLog) {
                 if (err) {
-                    return res.status(500).json(err)
+                    return res.status(500).json(err);
                 } else {
                     if (scoreLog) {
-                        console.log("Score Log Found")
-                        scoreLog.answers.push(Answer.id)
-                        scoreLog.save(function (err, response) {
+                        console.log("Score Log Found");
+                        scoreLog.answers.push(Answer.id);
+                        scoreLog.save(function(err, response) {
                             if (err) {
-                                Answer.delete()
-                                console.log(err)
+                                Answer.delete();
+                                console.log(err);
                                 return res.status(httpErrorCodes.INTERNAL_SERVER_ERROR).json(JsendSerializer.fail('Failed to Insert Answer to Score Log', err, 500));
                             } else {
                                 return res.status(200).json(JsendSerializer.success('ScoreLog Updated!', 201));
                             }
-                        })
+                        });
                     } else {
                         try {
-                            req.body.answers = [Answer.id]
+                            req.body.answers = [Answer.id];
                             const newLog = await ScoreLogModel.ScoreLog.create(req.body);
                             return res.status(200).json(JsendSerializer.success('ScoreLog created!', newLog, 201));
                         } catch (err) {
@@ -59,10 +59,10 @@ class AnswerController {
                         }
                     }
                 }
-            })
+            });
             // return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Answer created!', Answer, 201));
         } catch (err) {
-            console.log(err)
+            console.log(err);
             return res.status(httpErrorCodes.INTERNAL_SERVER_ERROR).json(JsendSerializer.fail('An internal Server error has occured!', err, 500));
         }
     }

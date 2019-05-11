@@ -9,9 +9,9 @@ const ScoreLogSchema = new Schema({
         ref: 'User',
         required: true
     },
-    created: { 
-        type: Date, 
-        required:true
+    created: {
+        type: Date,
+        required: true
     },
     score: {
         type: Number,
@@ -24,42 +24,39 @@ const ScoreLogSchema = new Schema({
     }
 });
 
-ScoreLogSchema.pre('save',{document:true} ,function(next) {
+ScoreLogSchema.pre('save', { document: true }, function(next) {
     var scoreLog = this;
-    if (scoreLog.answers != []){
+    if (scoreLog.answers != []) {
         var currentDate = scoreLog.created;
-        currentDate.setDate(currentDate.getDate()-5);
-        ScoreLog.find({created:{$gt:currentDate},owner:scoreLog.owner})
-            .sort({created:"ascending"})
-            .exec(function(err,scoreLogs){
-                if (err){
+        currentDate.setDate(currentDate.getDate() - 5);
+        ScoreLog.find({ created: { $gt: currentDate }, owner: scoreLog.owner })
+            .sort({ created: "ascending" })
+            .exec(function(err, scoreLogs) {
+                if (err) {
                     return err;
-                }
-                else {
+                } else {
                     var scoreMultiplier = 1;
-                    if (scoreLogs.length == 5){
+                    if (scoreLogs.length == 5) {
                         scoreMultiplier == 5
-                    }
-                    else {
-                        var laterDate = scoreLogs[scoreLogs.length - 1].created
-                        for (var i =scoreLogs.length-2;i >= 0;i--){
+                    } else {
+                        var laterDate = scoreLogs[scoreLogs.length - 1].created;
+                        for (var i = scoreLogs.length - 2; i >= 0; i--) {
                             var earlierDate = scoreLogs[i].created;
                             var timeDifference = Math.abs(laterDate.getTime() - earlierDate.getTime());
-                            if (timeDifference > 86400000){
+                            if (timeDifference > 86400000) {
                                 break;
-                            }
-                            else {
+                            } else {
                                 scoreMultiplier += 1;
                                 laterDate = scoreLogs[i].created;
                             }
                         }
                     }
-                    scoreLog.score = scoreMultiplier*scoreLog.answers.length
+                    scoreLog.score = scoreMultiplier * scoreLog.answers.length;
                     next();
                 }
-            })
-        }
-      });
+            });
+    }
+});
 
 const ScoreLog = mongoose.model('ScoreLog', ScoreLogSchema);
 

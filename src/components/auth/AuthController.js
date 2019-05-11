@@ -3,7 +3,7 @@ import httpErrorCodes from '../../util/httpErrorCodes';
 import JsendSerializer from '../../util/JsendSerializer';
 import AppError from '../../handlers/AppError';
 import passport from '../../config/passport';
-import {User, Dob, Whg} from '../user/userModel';
+import User from '../user/userModel';
 import { isNullOrUndefined } from 'util';
 
 /**
@@ -162,19 +162,19 @@ class AuthController {
 
                         const token = this.signToken(user._id);
 
-                       const findUserDob = Dob.findOne({user: user._id});
+                        const findUserDob = Dob.findOne({ user: user._id });
 
-                       const findUserWhg = Whg.findOne({user: user._id});
+                        const findUserWhg = Whg.findOne({ user: user._id });
 
-                       let dob = null;
-                       let whg = null;
-                       if (findUserDob._id != undefined) {
-                           dob = findUserDob;
-                       }
+                        let dob = null;
+                        let whg = null;
+                        if (findUserDob._id != undefined) {
+                            dob = findUserDob;
+                        }
 
-                       if (findUserWhg._id != undefined) {
-                           whg = findUserWhg;
-                       }
+                        if (findUserWhg._id != undefined) {
+                            whg = findUserWhg;
+                        }
 
                         res.json({
                             accessToken: token,

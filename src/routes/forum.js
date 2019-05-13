@@ -8,6 +8,7 @@ const forumRouter = Router();
 // Create thread
 forumRouter.post('/create', checkAuth, forumController.validateCreate, forumController.create);
 forumRouter.get('/:category', checkAuth, forumController.categoryThread);
+forumRouter.get('/:category/:threadId', checkAuth, forumController.getThread);
 
 // get all available categories
 // forumRouter.get('/category', checkAuth, forumController.allCategory);

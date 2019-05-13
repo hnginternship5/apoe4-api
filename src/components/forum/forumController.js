@@ -1,5 +1,6 @@
 import Forum from './forumModel';
 import Category from './categoryModel';
+import Comment from './comments';
 import AppError from '../../handlers/AppError';
 import JsendSerializer from '../../util/JsendSerializer';
 import httpErrorCodes from '../../util/httpErrorCodes';
@@ -85,6 +86,30 @@ class forumController {
         let thread = await Forum.find({catId: category._id}).populate('catId author', 'title firstName');
 
         return res.status(httpErrorCodes.OK).json(JsendSerializer.success('threads available', thread));
+                
+    };
+
+    async getThread(req, res, next) {
+        let category = await Category.findOne({title: req.params.category});
+        if (!category) {
+            res.status(httpErrorCodes.OK)
+                .json(JsendSerializer.success('category not available', null, httpErrorCodes.OK));
+            return;
+        }
+
+        // TODO: validate threadId
+        let thread = await Forum.find({
+            _id: req.params.threadId,
+            catId: category._id}).populate('catId author', 'title firstName');
+        let comments = await Comment.find({threadId: thread._id}).populate('author','name');
+        //comment = [1,2,3];
+
+        const result = {
+            thread,
+            comments
+        }
+
+        return res.status(httpErrorCodes.OK).json(JsendSerializer.success('threads available', result));
                 
     };
 

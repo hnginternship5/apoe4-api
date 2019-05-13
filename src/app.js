@@ -15,6 +15,8 @@ import questionRouter from './routes/question';
 import forgotRouter from './routes/forgot';
 import answerRouter from './routes/answer';
 import mailRouter from './routes/mail';
+import categoryRouter from './routes/category';
+import forumRouter from './routes/forum';
 import passport from 'passport';
 import flash from 'express-flash';
 
@@ -46,6 +48,8 @@ app.use('/api/v1/auth', forgotRouter);
 app.use('/api/v1/questions', questionRouter);
 app.use('/api/v1/answers', answerRouter);
 app.use('/api/v1/mail', mailRouter);
+app.use('/api/v1/forum', categoryRouter);
+app.use('/api/v1/forum', forumRouter);
 
 // Handle favicon requests from browsers
 app.get('/favicon.ico', (req, res) => res.sendStatus(204));

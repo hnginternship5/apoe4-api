@@ -74,15 +74,17 @@ class forumController {
 
 
 
-    async allCategory(req, res, next) {
-        let category = await Category.find();
+    async categoryThread(req, res, next) {
+        let category = await Category.findOne({title: req.params.category});
         if (!category) {
             res.status(httpErrorCodes.OK)
-                .json(JsendSerializer.success('no category available yet', null, httpErrorCodes.OK));
+                .json(JsendSerializer.success('category not available', null, httpErrorCodes.OK));
             return;
         }
 
-        return res.status(httpErrorCodes.OK).json(JsendSerializer.success('categories available', category));
+        let thread = await Forum.find({catId: category._id}).populate('catId author', 'title firstName');
+
+        return res.status(httpErrorCodes.OK).json(JsendSerializer.success('threads available', thread));
                 
     };
 

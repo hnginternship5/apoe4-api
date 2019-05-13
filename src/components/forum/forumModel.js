@@ -11,13 +11,13 @@ const forumSchema = new Schema({
         required: true,
     },
     author: {
-        type: mongoose.type.ObjectId,
-        required: true
+        type: Schema.Types.ObjectId,
+        required: true,
         ref: 'User',
         trim: true,
     },
     catId: {
-        type: mongoose.type.ObjectId,,
+        type: Schema.Types.ObjectId,
         required: true,
         ref: 'Category',
     },
@@ -33,4 +33,4 @@ const forumSchema = new Schema({
     }
 });
 
-export default  mongoose.model('User', forumSchema);
+export default  mongoose.model('Forum', forumSchema);

@@ -1,4 +1,5 @@
 import Category from './categoryModel';
+import AppError from '../../handlers/AppError';
 import JsendSerializer from '../../util/JsendSerializer';
 import httpErrorCodes from '../../util/httpErrorCodes';
 /**

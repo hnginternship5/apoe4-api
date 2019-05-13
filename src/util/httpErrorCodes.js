@@ -6,3 +6,4 @@ exports.METHOD_NOT_ALLOWED = 405;
 exports.OK = 200;
 exports.ACCEPTED = 202;
 exports.RESET_CONTENT = 205;
+exports.CREATED = 201;

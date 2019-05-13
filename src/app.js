@@ -37,7 +37,7 @@ app.use(bodyParser.json());
 app.use(flash());
 app.use(express.static(path.join(__dirname, "../public")));
 app.use(expressValidator());
-app.use(passport.initialize())
+app.use(passport.initialize());
 
 //routes
 app.get('/', (req, res) => res.send('Welcome to APOE4 API!'));

@@ -101,8 +101,11 @@ class forumController {
         let thread = await Forum.find({
             _id: req.params.threadId,
             catId: category._id}).populate('catId author', 'title firstName');
-        let comments = await Comment.find({threadId: thread._id}).populate('author','name');
+        let comments = await Comment.findOne({
+            threadId: thread[0]._id
+        }).populate('author','firstName');
         //comment = [1,2,3];
+        console.log(thread[0]._id);
 
         const result = {
             thread,
@@ -110,6 +113,42 @@ class forumController {
         }
 
         return res.status(httpErrorCodes.OK).json(JsendSerializer.success('threads available', result));
+                
+    };
+
+    async createComment(req, res, next) {
+        // TODO: validate threadId
+        let thread = await Forum.findOne({
+            _id: req.body.threadId
+        });
+
+        // return res.json({thread});
+
+        if (!thread) {
+            res.status(httpErrorCodes.BAD_REQUEST)
+                .json(JsendSerializer.success('thread does not exist', null, httpErrorCodes.BAD_REQUEST));
+            return;
+        }
+        let comments = new Comment({
+            comment: req.body.comment,
+            threadId: thread._id,
+            author: req.owner,
+        });
+
+
+        try {
+            await comments.save();
+        }catch(e) {
+            return next(
+                new AppError(e.message || 'An error occured creating comments', httpErrorCodes.INTERNAL_SERVER_ERROR, true)
+            );
+        }
+
+        const commentResult = await Comment.findOne({
+            _id: comments._id,
+        }).populate('author', 'firstName');
+
+        return res.status(httpErrorCodes.CREATED).json(JsendSerializer.success('comment created', commentResult));
                 
     };
 
@@ -127,6 +166,22 @@ class forumController {
                 .trim()
                 .notEmpty();
 
+        const errors = req.validationErrors();
+
+        if (errors) {
+            const errorResponse = JsendSerializer
+                .fail('Validation error', errors, httpErrorCodes.BAD_REQUEST);
+            return res.status(httpErrorCodes.BAD_REQUEST).json(errorResponse);
+        }
+        next();
+    }
+
+
+    validateComment(req, res, next) {
+        req.sanitizeBody("comment");
+        req.checkBody("comment", "comment cannot be blank")
+            .trim()
+            .notEmpty();
         const errors = req.validationErrors();
 
         if (errors) {

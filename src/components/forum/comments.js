@@ -2,12 +2,12 @@ import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 const commentSchema = new Schema({
-    thread_id: {
+    threadId: {
         type: Schema.Types.ObjectId,
         ref: 'Forum',
         required: true,
     },
-    body: {
+    comment: {
         type: String,
         required: true,
     },

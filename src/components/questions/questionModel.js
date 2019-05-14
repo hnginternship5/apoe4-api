@@ -9,6 +9,10 @@ const QuestionSchema = new Schema({
         ref: 'User',
         required: true
     },
+    child: {
+        type: String,
+        required: false
+    },
     type: {
         type: String,
         enum: ["Morning", "Noon", "Night", "Register"],

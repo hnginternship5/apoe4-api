@@ -57,32 +57,6 @@ const UserSchema = new Schema({
     resetPasswordExpires: Date,
 });
 
-const DobSchema = new Schema({
-    dob: {
-        type: Date,
-    },
-    user: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'User'
-    },
-});
-
-const WhgSchema = new Schema({
-    weight: {
-        type: Number,
-    },
-    Height: {
-        type: String,
-    },
-    gender: {
-        type: String,
-    },
-    user: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'User'
-    },
-});
-
 UserSchema.plugin(timestamps, {
     createdAt: {
         index: true,
@@ -115,6 +89,4 @@ UserSchema.methods = {
     },
 };
 
-export const Dob = mongoose.model('Dob', DobSchema);
-export const Whg = mongoose.model('Whg', WhgSchema);
-export default  mongoose.model('User', UserSchema);
+export const User =  mongoose.model('User', UserSchema);

@@ -84,9 +84,9 @@ UserSchema.methods = {
         return bcrypt.hashSync(plainTextWord, salt);
     },
     comparePassword: function (password) {
-        return bcrypt.compareSync(password, this.password);
+        const data =  bcrypt.compareSync(password, this.password);
+        return data;
     },
 };
 
-
-module.exports = mongoose.model('User', UserSchema);
+export const User =  mongoose.model('User', UserSchema);

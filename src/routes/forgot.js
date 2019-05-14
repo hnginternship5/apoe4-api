@@ -56,57 +56,6 @@ forgotRouter.post('/forgot', async (req, res) => {
         });
       }
     });
-
-  
-
-    // async.waterfall([
-    //     function(done) {
-    //     User.findOne({
-    //         email: req.body.email
-    //     }).exec(function(err, user) {
-    //         if (user) {
-    //         done(err, user);
-    //         } else {
-    //         done('User not found.');
-    //         }
-    //     });
-    //     },
-    //     function(user, done) {
-    //     // create the random token
-    //     crypto.randomBytes(20, function(err, buffer) {
-    //         const token = buffer.toString('hex');
-    //         done(err, user, token);
-    //     });
-    //     },
-    //     function(user, token, done) {
-    //       console.log(user._id)
-    //     User.findByIdAndUpdate({ _id: user._id }, {resetPasswordToken: token, resetPasswordExpires: Date.now() + 86400000 }, { upsert: true, new: true }).exec(function(err, new_user) {
-    //         done(err, token, new_user);
-    //     });
-    //     },
-    //     function(token, user, done) {
-    //     const data = {
-    //         to: user.email,
-    //         from: email,
-    //         template: 'forgot-password-email',
-    //         subject: 'Reset Password!',
-    //         context: {
-    //         url: `${req.headers.host}/api/v1/auth/reset/${token}`,
-    //         name: user.fullName.split(' ')[0]
-    //         }
-    //     };
-    
-    //     smtpTransport.sendMail(data, function(err) {
-    //         if (!err) {
-    //         return res.status(200).json({ message: 'Kindly check your email for further instructions' });
-    //         } else {
-    //         return done(err);
-    //         }
-    //     });
-    //     }
-    // ], function(err) {
-    //     return res.status(422).json({ message: err });
-    // });
 });
 
 forgotRouter.get('/reset/:token', (req, res) => {

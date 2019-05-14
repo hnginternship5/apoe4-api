@@ -1,7 +1,8 @@
-import  User from '../components/user/userModel';
+import  {User} from '../components/user/userModel';
 import crypto from 'crypto';
 import async from 'async';
 import smtpTransport from '../components/mail/forgotmail';
+import moment from 'moment';
 
 const forgotRouter = require('express').Router();
 
@@ -24,54 +25,88 @@ const forgotRouter = require('express').Router();
  * @apiparam {String} email user email
  */
 const email = `apoe4@gmail.com`;
-forgotRouter.post('/forgot', (req, res) => {
-    async.waterfall([
-        function(done) {
-        User.findOne({
-            email: req.body.email
-        }).exec(function(err, user) {
-            if (user) {
-            done(err, user);
-            } else {
-            done('User not found.');
-            }
-        });
-        },
-        function(user, done) {
-        // create the random token
-        crypto.randomBytes(20, function(err, buffer) {
-            const token = buffer.toString('hex');
-            done(err, user, token);
-        });
-        },
-        function(user, token, done) {
-        User.findByIdAndUpdate({ _id: user._id }, {resetPasswordToken: token, resetPasswordExpires: Date.now() + 86400000 }, { upsert: true, new: true }).exec(function(err, new_user) {
-            done(err, token, new_user);
-        });
-        },
-        function(token, user, done) {
-        const data = {
-            to: user.email,
-            from: email,
-            template: 'forgot-password-email',
-            subject: 'Reset Password!',
-            context: {
-            url: `${req.headers.host}/api/v1/auth/reset/${token}`,
-            name: user.fullName.split(' ')[0]
-            }
-        };
-    
-        smtpTransport.sendMail(data, function(err) {
-            if (!err) {
-            return res.status(200).json({ message: 'Kindly check your email for further instructions' });
-            } else {
-            return done(err);
-            }
-        });
+forgotRouter.post('/forgot', async (req, res) => {
+  const {email} = req.body;
+  const token = crypto.randomBytes(20).toString('hex');
+
+  let user = await User.findOne({email});
+
+  user.resetPasswordToken = token;
+  user.resetPasswordExpires = moment() + 86400000;
+
+  await user.save();
+
+  const data = {
+        to: user.email,
+        from: email,
+        template: 'forgot-password-email',
+        subject: 'Reset Password!',
+        context: {
+        url: `${req.headers.host}/api/v1/auth/reset/${token}`,
+        name: user.fullName.split(' ')[0]
         }
-    ], function(err) {
-        return res.status(422).json({ message: err });
+    };
+
+    smtpTransport.sendMail(data, function(err) {
+        if (!err) {
+        return res.status(200).json({ message: 'Kindly check your email for further instructions' });
+        } else {
+        return res.status(400).json({
+          message: 'Email was not sent'
+        });
+      }
     });
+
+  
+
+    // async.waterfall([
+    //     function(done) {
+    //     User.findOne({
+    //         email: req.body.email
+    //     }).exec(function(err, user) {
+    //         if (user) {
+    //         done(err, user);
+    //         } else {
+    //         done('User not found.');
+    //         }
+    //     });
+    //     },
+    //     function(user, done) {
+    //     // create the random token
+    //     crypto.randomBytes(20, function(err, buffer) {
+    //         const token = buffer.toString('hex');
+    //         done(err, user, token);
+    //     });
+    //     },
+    //     function(user, token, done) {
+    //       console.log(user._id)
+    //     User.findByIdAndUpdate({ _id: user._id }, {resetPasswordToken: token, resetPasswordExpires: Date.now() + 86400000 }, { upsert: true, new: true }).exec(function(err, new_user) {
+    //         done(err, token, new_user);
+    //     });
+    //     },
+    //     function(token, user, done) {
+    //     const data = {
+    //         to: user.email,
+    //         from: email,
+    //         template: 'forgot-password-email',
+    //         subject: 'Reset Password!',
+    //         context: {
+    //         url: `${req.headers.host}/api/v1/auth/reset/${token}`,
+    //         name: user.fullName.split(' ')[0]
+    //         }
+    //     };
+    
+    //     smtpTransport.sendMail(data, function(err) {
+    //         if (!err) {
+    //         return res.status(200).json({ message: 'Kindly check your email for further instructions' });
+    //         } else {
+    //         return done(err);
+    //         }
+    //     });
+    //     }
+    // ], function(err) {
+    //     return res.status(422).json({ message: err });
+    // });
 });
 
 forgotRouter.get('/reset/:token', (req, res) => {

@@ -2,7 +2,7 @@ import passport from 'passport';
 import passportJWT from 'passport-jwt';
 import passportLocalStrategy from 'passport-local';
 import { Strategy } from 'passport-google-oauth2';
-import User from '../components/user/userModel';
+import {User} from '../components/user/userModel';
 import config from '.';
 
 const ExtractJWT = passportJWT.ExtractJwt;

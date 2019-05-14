@@ -1,6 +1,7 @@
 import Forum from './forumModel';
 import Category from './categoryModel';
 import Comment from './comments';
+import {User} from '../user/userModel';
 import AppError from '../../handlers/AppError';
 import JsendSerializer from '../../util/JsendSerializer';
 import httpErrorCodes from '../../util/httpErrorCodes';
@@ -54,7 +55,7 @@ class forumController {
 
         const newForum = new Forum({
             title: req.body.title,
-            body: req.body.body,
+            body: req.body.post,
             catId: category._id,
             author: req.owner,
         });
@@ -129,8 +130,9 @@ class forumController {
                 .json(JsendSerializer.success('thread does not exist', null, httpErrorCodes.BAD_REQUEST));
             return;
         }
+
         let comments = new Comment({
-            comment: req.body.comment,
+            comment: req.body.post,
             threadId: thread._id,
             author: req.owner,
         });
@@ -154,12 +156,12 @@ class forumController {
 
     validateCreate(req, res, next) {
         req.sanitizeBody("title");
-        req.sanitizeBody("body");
+        req.sanitizeBody("post");
         req.sanitizeBody("category");
         req.checkBody("title", "title cannot be blank")
             .trim()
             .notEmpty();
-        req.checkBody("body", "body cannot be blank")
+        req.checkBody("post", "post cannot be blank")
             .trim()
             .notEmpty();
             req.checkBody("category", "category cannot be blank")
@@ -178,8 +180,8 @@ class forumController {
 
 
     validateComment(req, res, next) {
-        req.sanitizeBody("comment");
-        req.checkBody("comment", "comment cannot be blank")
+        req.sanitizeBody("post");
+        req.checkBody("post", "post cannot be blank")
             .trim()
             .notEmpty();
         const errors = req.validationErrors();
@@ -192,6 +194,31 @@ class forumController {
         next();
     }
 
+    // TODO: implement notification for mention users
+    // FIXME: regex replaces name in between 'a' tag
+    getMentions(req,res,next) {
+        return new Promise((resolve,reject)=>{
+            const regex = /@\w+/g;
+            const arr = req.body.post.match(regex);
+            arr.forEach(async data=>{
+                console.log(data);
+                const temp = data.slice(1);
+                const mention = await User.findOne({
+                    'firstName': temp
+                });
+
+                arr.shift();
+                    
+                if(mention) {
+                    req.body.post = req.body.post.replace(data,`<a href="/users/${mention.id}">${data}</a>`);
+                }     
+            }); 
+            
+            setInterval(()=>{
+                if (arr.length == 0) resolve();
+            },100);
+        }).then(() => next());
+    }
 
 }
 

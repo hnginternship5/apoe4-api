@@ -11,7 +11,7 @@ const QuestionSchema = new Schema({
     },
     type: {
         type: String,
-        enum: ["Morning","Noon","Night","Register"],
+        enum: ["Morning", "Noon", "Night", "Register"],
         required: true
     },
     options: {

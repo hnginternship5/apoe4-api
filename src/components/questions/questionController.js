@@ -32,15 +32,13 @@ class QuestionController {
             var dt = new Date();
             dt.setDate(dt.getDate() - 1);
             console.log(dt)
-            console.log(`Owner: ${req.owner}`)
             questions.map((question) => {
-                answerModel.Answer.findOne({ question: question.id, created: { $gt: dt },owner:req.owner })
+                answerModel.Answer.findOne({ question: question.id, created: { $lt: dt } })
                     .exec(function(err, answer) {
                         if (answer == null && !res.headersSent) {
                             return res.status(200).json({
                                 question: question,
-                                error: false,
-                                status:0
+                                error: false
                             });
                         }
                     })
@@ -48,9 +46,8 @@ class QuestionController {
             setTimeout(function() {
                 if (!res.headersSent) {
                     return res.status(300).json({
-                        msg: "No more questions available",
-                        error: true,
-                        status:1
+                        msg: "no messages",
+                        error: true
                     })
                 }
             }, 3000)

@@ -54,7 +54,7 @@ class MailController {
      */
     async subscribeChimp(req,res){
 
-        console.log(req.body)
+        console.log(req.body);
 
         var clientServerOptions = {
             uri: 'https://us20.api.mailchimp.com/3.0/lists/8b56cd60fd/members',

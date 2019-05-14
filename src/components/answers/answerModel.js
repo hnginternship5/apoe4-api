@@ -9,6 +9,11 @@ const AnswerSchema = new Schema({
         ref: 'Question',
         required: true
     },
+    child: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Follow-up Question',
+        required: false
+    },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

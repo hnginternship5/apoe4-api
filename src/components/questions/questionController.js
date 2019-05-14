@@ -27,11 +27,11 @@ class QuestionController {
             if (err) {
                 return res.status(500).json({
                     error: err
-                })
+                });
             };
             var dt = new Date();
             dt.setDate(dt.getDate() - 1);
-            console.log(dt)
+            console.log(dt);
             questions.map((question) => {
                 answerModel.Answer.findOne({ question: question.id, created: { $lt: dt } })
                     .exec(function(err, answer) {
@@ -41,8 +41,8 @@ class QuestionController {
                                 error: false
                             });
                         }
-                    })
-            })
+                    });
+            });
             setTimeout(function() {
                 if (!res.headersSent) {
                     return res.status(300).json({
@@ -54,9 +54,9 @@ class QuestionController {
         })
     }
 
-   //This isn't meant to work for now, the admin dashboard to be created will be needed in doing the mapping
+    //This isn't meant to work for now, the admin dashboard to be created will be needed in doing the mapping
     async getChildQuestion(req, res, next) {
-        QuestionModel.Question.find({ type: req.body.type}, (err, questions) => {
+        QuestionModel.Question.find({ type: req.body.type }, (err, questions) => {
             if (err) {
                 return res.status(500).json({
                     error: err
@@ -67,13 +67,13 @@ class QuestionController {
             console.log(dt)
             console.log(`Owner: ${req.owner}`)
             questions.map((question) => {
-                answerModel.Answer.findOne({ question: question.id, created: { $gt: dt },owner:req.owner })
+                answerModel.Answer.findOne({ question: question.id, created: { $gt: dt }, owner: req.owner })
                     .exec(function(err, answer) {
                         if (answer == null && !res.headersSent) {
                             return res.status(200).json({
                                 question: question,
                                 error: false,
-                                status:0
+                                status: 0
                             });
                         }
                     })
@@ -83,7 +83,7 @@ class QuestionController {
                     return res.status(300).json({
                         msg: "No more questions available",
                         error: true,
-                        status:1
+                        status: 1
                     })
                 }
             }, 3000)

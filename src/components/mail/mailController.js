@@ -23,16 +23,15 @@ class MailController {
      */
 
 
-    async contactForm(req,res){
-        try{
+    async contactForm(req, res) {
+        try {
             MailModel.validate(req.body)
             const contactMail = new MailModel(req.body);
-            contactMail.sendEmail("geneapoe@gmail.com","Contact Request Form","contact-form");
-            contactMail.sendEmail(contactMail.email,"Contact Request","contact-form-response");
+            contactMail.sendEmail("geneapoe@gmail.com", "Contact Request Form", "contact-form");
+            contactMail.sendEmail(contactMail.email, "Contact Request", "contact-form-response");
             return res.status(200).json(contactMail)
-        }
-        catch(err){
-            return res.status(httpErrorCodes.BAD_REQUEST).json({"err":err});
+        } catch (err) {
+            return res.status(httpErrorCodes.BAD_REQUEST).json({ "err": err });
         }
     }
 
@@ -52,32 +51,30 @@ class MailController {
      *
      * @apiparam {String} email Email Address of the person wants to be contacted.
      */
-    async subscribeChimp(req,res){
+    async subscribeChimp(req, res) {
 
         console.log(req.body);
 
         var clientServerOptions = {
             uri: 'https://us20.api.mailchimp.com/3.0/lists/8b56cd60fd/members',
             body: JSON.stringify({
-                    "email_address":req.body.email,
-                    "status_if_new":"subscribed",
-                    "status":"subscribed"
+                "email_address": req.body.email,
+                "status_if_new": "subscribed",
+                "status": "subscribed"
             }),
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization':'apikey 47116c36887736ffd3b771299319ac94-us20'
+                'Authorization': 'apikey 47116c36887736ffd3b771299319ac94-us20'
             }
         }
-        request(clientServerOptions, function (err, response) {
-            if  (err){
-                return res.status(500).json({error:err})
-            }
-            else {
-                if (response.statusCode===200){
+        request(clientServerOptions, function(err, response) {
+            if (err) {
+                return res.status(500).json({ error: err })
+            } else {
+                if (response.statusCode === 200) {
                     return res.status(200).json(JSON.parse(response.body))
-                }
-                else {
+                } else {
                     res.status(400).json(JSON.parse(response.body))
                 }
             }

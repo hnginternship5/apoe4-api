@@ -12,7 +12,7 @@ questionRouter.post('/getQuestion/:child', checkAuth, QuestionController.getChil
 questionRouter.post('/createQuestion', QuestionController.createQuestion);
 
 //update Questions
-questionRouter.patch('/updateQuestion', QuestionController.updateQuestion);
+questionRouter.patch('/updateQuestion:questionId', QuestionController.updateQuestion);
 
 
 module.exports = questionRouter;

@@ -124,8 +124,15 @@ class QuestionController {
     async updateQuestion(req, res, next) {
         try {
             const id = req.params.questionId;
-            await QuestionModel.update({});
-            return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Question created!', Question, 201));
+            const UpdateText = {
+                text: req.body.text,
+                type: req.body.type,
+                category: req.body.category,
+                position: req.body.position,
+                options: req.body.options
+            }
+            await QuestionModel.update(id, UpdateText);
+            return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Question Updated Successfully!', Question, 201));
         } catch (err) {
             console.log(err);
             return res.status(httpErrorCodes.INTERNAL_SERVER_ERROR).json(JsendSerializer.fail('An internal Server error has occured!', err, 500));

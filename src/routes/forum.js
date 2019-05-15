@@ -10,7 +10,10 @@ forumRouter.post('/create', checkAuth, forumController.validateCreate, forumCont
 forumRouter.get('/:category', checkAuth, forumController.categoryThread);
 forumRouter.get('/:category/:threadId', checkAuth, forumController.getThread);
 forumRouter.post('/comment', checkAuth, forumController.validateComment, forumController.getMentions, forumController.createComment);
-
+forumRouter.put('/edit', checkAuth, forumController.updateThread);
+forumRouter.put('/comment/modify', checkAuth, forumController.modifyComment);
+forumRouter.delete('/:threadId', checkAuth, forumController.deleteThread);
+forumRouter.delete('/comment/:commentId', checkAuth, forumController.deleteComment);
 // get all available categories
 // forumRouter.get('/category', checkAuth, forumController.allCategory);
 

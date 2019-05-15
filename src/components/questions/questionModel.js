@@ -12,8 +12,8 @@ const QuestionSchema = new Schema({
         ref: 'User',
         required: true
     },
-    child: {
-        type: String,
+    position: {
+        type: Number,
         required: false
     },
     type: {

@@ -12,7 +12,7 @@ class QuestionController {
      * @apiGroup Questions
      *
      *
-     * @apiSuccess {String} Response Question which hasnt been answere or message stating all questions answered
+     * @apiSuccess {String} Response Question which hasn't been answered or message stating all questions answered
      *
      *
      * @apiError {String} Response An internal Server error has occured!
@@ -28,7 +28,7 @@ class QuestionController {
                 return res.status(500).json({
                     error: err
                 });
-            };
+            }
             var dt = new Date();
             dt.setDate(dt.getDate() - 1);
             console.log(dt);
@@ -48,10 +48,10 @@ class QuestionController {
                     return res.status(300).json({
                         msg: "no messages",
                         error: true
-                    })
+                    });
                 }
-            }, 3000)
-        })
+            }, 3000);
+        });
     }
 
     //This isn't meant to work for now, the admin dashboard to be created will be needed in doing the mapping
@@ -60,12 +60,12 @@ class QuestionController {
             if (err) {
                 return res.status(500).json({
                     error: err
-                })
-            };
+                });
+            }
             var dt = new Date();
             dt.setDate(dt.getDate() - 1);
-            console.log(dt)
-            console.log(`Owner: ${req.owner}`)
+            console.log(dt);
+            console.log(`Owner: ${req.owner}`);
             questions.map((question) => {
                 answerModel.Answer.findOne({ question: question.id, created: { $gt: dt }, owner: req.owner })
                     .exec(function(err, answer) {
@@ -76,8 +76,8 @@ class QuestionController {
                                 status: 0
                             });
                         }
-                    })
-            })
+                    });
+            });
             setTimeout(function() {
                 if (!res.headersSent) {
                     return res.status(300).json({

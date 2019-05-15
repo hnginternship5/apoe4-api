@@ -1,5 +1,4 @@
 import Forum from './forumModel';
-import Category from './categoryModel';
 import Comment from './comments';
 import {User} from '../user/userModel';
 import AppError from '../../handlers/AppError';
@@ -44,19 +43,9 @@ class forumController {
      */
 
     async create(req, res, next) {
-        let category = await Category.findOne({
-            title: req.body.category
-        });
-        if (!category) {
-            res.status(httpErrorCodes.BAD_REQUEST)
-                .json(JsendSerializer.success('category does not exist', null, httpErrorCodes.BAD_REQUEST));
-            return;
-        }
-
         const newForum = new Forum({
             title: req.body.title,
             body: req.body.post,
-            catId: category._id,
             author: req.owner,
         });
 
@@ -76,32 +65,25 @@ class forumController {
 
 
 
-    async categoryThread(req, res, next) {
-        let category = await Category.findOne({title: req.params.category});
-        if (!category) {
-            res.status(httpErrorCodes.OK)
-                .json(JsendSerializer.success('category not available', null, httpErrorCodes.OK));
-            return;
-        }
+    // TODO: add count for likes
+    async allThread(req, res, next) {
+        let thread = await Forum.find().populate('author', 'firstName');
 
-        let thread = await Forum.find({catId: category._id}).populate('catId author', 'title firstName');
+        for (let i of Object.keys(thread)) {
+            let commentCount = await Comment.countDocuments({threadId: thread[i]._id});
+            thread[i]= {...thread[i]._doc, commentCount};
+        }
 
         return res.status(httpErrorCodes.OK).json(JsendSerializer.success('threads available', thread));
                 
     };
 
     async getThread(req, res, next) {
-        let category = await Category.findOne({title: req.params.category});
-        if (!category) {
-            res.status(httpErrorCodes.OK)
-                .json(JsendSerializer.success('category not available', null, httpErrorCodes.OK));
-            return;
-        }
-
         // TODO: validate threadId
         let thread = await Forum.find({
             _id: req.params.threadId,
-            catId: category._id}).populate('catId author', 'title firstName');
+        }).populate('author', 'firstName');
+
         let comments = await Comment.findOne({
             threadId: thread[0]._id
         }).populate('author','firstName');
@@ -157,16 +139,12 @@ class forumController {
     validateCreate(req, res, next) {
         req.sanitizeBody("title");
         req.sanitizeBody("post");
-        req.sanitizeBody("category");
         req.checkBody("title", "title cannot be blank")
             .trim()
             .notEmpty();
         req.checkBody("post", "post cannot be blank")
             .trim()
             .notEmpty();
-            req.checkBody("category", "category cannot be blank")
-                .trim()
-                .notEmpty();
 
         const errors = req.validationErrors();
 
@@ -195,7 +173,6 @@ class forumController {
     }
 
     // TODO: implement notification for mention users
-    // FIXME: regex replaces name in between 'a' tag
     getMentions(req,res,next) {
         return new Promise((resolve,reject)=>{
             const regex = /@\w+/g;
@@ -210,7 +187,8 @@ class forumController {
                 arr.shift();
                     
                 if(mention) {
-                    req.body.post = req.body.post.replace(data,`<a href="/users/${mention.id}">${data}</a>`);
+                    const regex = new RegExp(data,'g');
+                    req.body.post = req.body.post.replace(regex,`<a href="/users/${mention.id}">${temp}</a>`);
                 }     
             }); 
             

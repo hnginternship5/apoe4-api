@@ -220,6 +220,124 @@ class forumController {
         }).then(() => next());
     }
 
+
+    async updateThread(req, res){
+        const {id, title, body} = req.body;
+
+        let thread = await Forum.findOne({
+            _id: id
+        });
+
+        if (!thread) {
+            const errorResponse = JsendSerializer
+                .error('Thread does not exist', httpErrorCodes.NOT_FOUND);
+            return res.status(httpErrorCodes.NOT_FOUND).json(errorResponse)
+        }
+
+        if (thread && req.owner != thread.author._id ) {
+            const errorResponse = JsendSerializer
+                .fail('Unauthorized', null, httpErrorCodes.UNAUTHORIZED);
+            return res.status(httpErrorCodes.UNAUTHORIZED).json(errorResponse)
+        }
+
+        if(title){
+            thread.title = title;
+        }
+        if (body) {
+            thread.body = body
+        }
+
+        await thread.save();
+        return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Thread updated', thread));
+    }
+
+    async modifyComment(req, res){
+        const {id, comment, threadId} = req.body;
+        let commentForum = await Comment.findById(id);
+
+        if (!commentForum) {
+            const errorResponse = JsendSerializer
+                .error('Comment does not exist', httpErrorCodes.NOT_FOUND);
+            return res.status(httpErrorCodes.NOT_FOUND).json(errorResponse)
+        }
+
+        if (commentForum && commentForum.threadId != threadId) {
+            const errorResponse = JsendSerializer
+                .error('Thread does not exist', httpErrorCodes.NOT_FOUND);
+            return res.status(httpErrorCodes.NOT_FOUND).json(errorResponse)
+        }
+
+        if (commentForum && req.owner != commentForum.author._id) {
+            const errorResponse = JsendSerializer
+                .fail('Unauthorized', null, httpErrorCodes.UNAUTHORIZED);
+            return res.status(httpErrorCodes.UNAUTHORIZED).json(errorResponse)
+        }
+
+        if (comment) {
+            commentForum.comment = comment;
+        }
+
+        await commentForum.save();
+        return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Comment modified', commentForum));
+    }
+
+    async deleteThread(req, res){
+        const {threadId} = req.params;
+
+        let thread = await Forum.findById(threadId);
+
+        if (!thread) {
+            const errorResponse = JsendSerializer
+                .error('Thread does not exist', httpErrorCodes.NOT_FOUND);
+            return res.status(httpErrorCodes.NOT_FOUND).json(errorResponse)
+        }
+
+        if (thread && req.owner != thread.author._id ) {
+            const errorResponse = JsendSerializer
+                .fail('Unauthorized', null, httpErrorCodes.UNAUTHORIZED);
+            return res.status(httpErrorCodes.UNAUTHORIZED).json(errorResponse)
+        }
+
+        let comment = await Comment.findOne({
+            threadId
+        });
+
+        if (comment) {
+            const errorResponse = JsendSerializer
+                .fail('Comment exists for this thread', null, httpErrorCodes.METHOD_NOT_ALLOWED);
+            return res.status(httpErrorCodes.METHOD_NOT_ALLOWED).json(errorResponse)
+        }
+
+        await Forum.deleteOne({ _id: threadId });
+        const forum = await Forum.find();
+        return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Thread has been deleted', forum));
+
+    }
+
+    async deleteComment(req, res){
+        const {commentId} = req.params;
+
+        const comment = await Comment.findById(commentId);
+
+        if (!comment) {
+            const errorResponse = JsendSerializer
+                .error('Comment does not exist', httpErrorCodes.NOT_FOUND);
+            return res.status(httpErrorCodes.NOT_FOUND).json(errorResponse)
+        }
+
+        if (comment && req.owner != comment.author._id ) {
+            const errorResponse = JsendSerializer
+                .fail('Unauthorized', null, httpErrorCodes.UNAUTHORIZED);
+            return res.status(httpErrorCodes.UNAUTHORIZED).json(errorResponse)
+        }
+
+        let thread = comment.threadId;
+
+        await Comment.deleteOne({_id:commentId});
+        const otherComments = await Comment.find({threadId:thread});
+        return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Comment has been deleted', otherComments));
+
+    }
 }
 
 export default new forumController();

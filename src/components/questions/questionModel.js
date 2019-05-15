@@ -20,6 +20,10 @@ const QuestionSchema = new Schema({
     },
     options: {
         type: [String]
+    },
+    category: {
+        type: String,
+        required: true
     }
 });
 

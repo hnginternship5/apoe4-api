@@ -11,5 +11,8 @@ questionRouter.post('/getQuestion/:child', checkAuth, QuestionController.getChil
 //Create Questions
 questionRouter.post('/createQuestion', QuestionController.createQuestion);
 
+//update Questions
+questionRouter.patch('/updateQuestion', QuestionController.createQuestion);
+
 
 module.exports = questionRouter;

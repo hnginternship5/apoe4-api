@@ -123,7 +123,7 @@ class QuestionController {
     //update questions
     async updateQuestion(req, res, next) {
         try {
-            await QuestionModel.update();
+            await QuestionModel.update({});
             return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Question created!', Question, 201));
         } catch (err) {
             console.log(err);

@@ -65,9 +65,14 @@ class forumController {
 
 
 
+    // TODO: add count for likes
     async allThread(req, res, next) {
         let thread = await Forum.find().populate('author', 'firstName');
-        let commentCount = await Comment.countDocuments({threadId:_})
+
+        for (let i of Object.keys(thread)) {
+            let commentCount = await Comment.countDocuments({threadId: thread[i]._id});
+            thread[i]= {...thread[i]._doc, commentCount};
+        }
 
         return res.status(httpErrorCodes.OK).json(JsendSerializer.success('threads available', thread));
                 
@@ -77,7 +82,7 @@ class forumController {
         // TODO: validate threadId
         let thread = await Forum.find({
             _id: req.params.threadId,
-        }).populate('catId author', 'title firstName');
+        }).populate('author', 'firstName');
 
         let comments = await Comment.findOne({
             threadId: thread[0]._id

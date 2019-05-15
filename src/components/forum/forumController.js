@@ -1,6 +1,7 @@
 import Forum from './forumModel';
 import Category from './categoryModel';
 import Comment from './comments';
+import {User} from '../user/userModel';
 import AppError from '../../handlers/AppError';
 import JsendSerializer from '../../util/JsendSerializer';
 import httpErrorCodes from '../../util/httpErrorCodes';
@@ -54,7 +55,7 @@ class forumController {
 
         const newForum = new Forum({
             title: req.body.title,
-            body: req.body.body,
+            body: req.body.post,
             catId: category._id,
             author: req.owner,
         });
@@ -129,8 +130,9 @@ class forumController {
                 .json(JsendSerializer.success('thread does not exist', null, httpErrorCodes.BAD_REQUEST));
             return;
         }
+
         let comments = new Comment({
-            comment: req.body.comment,
+            comment: req.body.post,
             threadId: thread._id,
             author: req.owner,
         });
@@ -154,12 +156,12 @@ class forumController {
 
     validateCreate(req, res, next) {
         req.sanitizeBody("title");
-        req.sanitizeBody("body");
+        req.sanitizeBody("post");
         req.sanitizeBody("category");
         req.checkBody("title", "title cannot be blank")
             .trim()
             .notEmpty();
-        req.checkBody("body", "body cannot be blank")
+        req.checkBody("post", "post cannot be blank")
             .trim()
             .notEmpty();
             req.checkBody("category", "category cannot be blank")
@@ -178,8 +180,8 @@ class forumController {
 
 
     validateComment(req, res, next) {
-        req.sanitizeBody("comment");
-        req.checkBody("comment", "comment cannot be blank")
+        req.sanitizeBody("post");
+        req.checkBody("post", "post cannot be blank")
             .trim()
             .notEmpty();
         const errors = req.validationErrors();
@@ -192,7 +194,150 @@ class forumController {
         next();
     }
 
+    // TODO: implement notification for mention users
+    // FIXME: regex replaces name in between 'a' tag
+    getMentions(req,res,next) {
+        return new Promise((resolve,reject)=>{
+            const regex = /@\w+/g;
+            const arr = req.body.post.match(regex);
+            arr.forEach(async data=>{
+                console.log(data);
+                const temp = data.slice(1);
+                const mention = await User.findOne({
+                    'firstName': temp
+                });
 
+                arr.shift();
+                    
+                if(mention) {
+                    req.body.post = req.body.post.replace(data,`<a href="/users/${mention.id}">${data}</a>`);
+                }     
+            }); 
+            
+            setInterval(()=>{
+                if (arr.length == 0) resolve();
+            },100);
+        }).then(() => next());
+    }
+
+
+    async updateThread(req, res){
+        const {id, title, body} = req.body;
+
+        let thread = await Forum.findOne({
+            _id: id
+        });
+
+        if (!thread) {
+            const errorResponse = JsendSerializer
+                .error('Thread does not exist', httpErrorCodes.NOT_FOUND);
+            return res.status(httpErrorCodes.NOT_FOUND).json(errorResponse)
+        }
+
+        if (thread && req.owner != thread.author._id ) {
+            const errorResponse = JsendSerializer
+                .fail('Unauthorized', null, httpErrorCodes.UNAUTHORIZED);
+            return res.status(httpErrorCodes.UNAUTHORIZED).json(errorResponse)
+        }
+
+        if(title){
+            thread.title = title;
+        }
+        if (body) {
+            thread.body = body
+        }
+
+        await thread.save();
+        return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Thread updated', thread));
+    }
+
+    async modifyComment(req, res){
+        const {id, comment, threadId} = req.body;
+        let commentForum = await Comment.findById(id);
+
+        if (!commentForum) {
+            const errorResponse = JsendSerializer
+                .error('Comment does not exist', httpErrorCodes.NOT_FOUND);
+            return res.status(httpErrorCodes.NOT_FOUND).json(errorResponse)
+        }
+
+        if (commentForum && commentForum.threadId != threadId) {
+            const errorResponse = JsendSerializer
+                .error('Thread does not exist', httpErrorCodes.NOT_FOUND);
+            return res.status(httpErrorCodes.NOT_FOUND).json(errorResponse)
+        }
+
+        if (commentForum && req.owner != commentForum.author._id) {
+            const errorResponse = JsendSerializer
+                .fail('Unauthorized', null, httpErrorCodes.UNAUTHORIZED);
+            return res.status(httpErrorCodes.UNAUTHORIZED).json(errorResponse)
+        }
+
+        if (comment) {
+            commentForum.comment = comment;
+        }
+
+        await commentForum.save();
+        return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Comment modified', commentForum));
+    }
+
+    async deleteThread(req, res){
+        const {threadId} = req.params;
+
+        let thread = await Forum.findById(threadId);
+
+        if (!thread) {
+            const errorResponse = JsendSerializer
+                .error('Thread does not exist', httpErrorCodes.NOT_FOUND);
+            return res.status(httpErrorCodes.NOT_FOUND).json(errorResponse)
+        }
+
+        if (thread && req.owner != thread.author._id ) {
+            const errorResponse = JsendSerializer
+                .fail('Unauthorized', null, httpErrorCodes.UNAUTHORIZED);
+            return res.status(httpErrorCodes.UNAUTHORIZED).json(errorResponse)
+        }
+
+        let comment = await Comment.findOne({
+            threadId
+        });
+
+        if (comment) {
+            const errorResponse = JsendSerializer
+                .fail('Comment exists for this thread', null, httpErrorCodes.METHOD_NOT_ALLOWED);
+            return res.status(httpErrorCodes.METHOD_NOT_ALLOWED).json(errorResponse)
+        }
+
+        await Forum.deleteOne({ _id: threadId });
+        const forum = await Forum.find();
+        return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Thread has been deleted', forum));
+
+    }
+
+    async deleteComment(req, res){
+        const {commentId} = req.params;
+
+        const comment = await Comment.findById(commentId);
+
+        if (!comment) {
+            const errorResponse = JsendSerializer
+                .error('Comment does not exist', httpErrorCodes.NOT_FOUND);
+            return res.status(httpErrorCodes.NOT_FOUND).json(errorResponse)
+        }
+
+        if (comment && req.owner != comment.author._id ) {
+            const errorResponse = JsendSerializer
+                .fail('Unauthorized', null, httpErrorCodes.UNAUTHORIZED);
+            return res.status(httpErrorCodes.UNAUTHORIZED).json(errorResponse)
+        }
+
+        let thread = comment.threadId;
+
+        await Comment.deleteOne({_id:commentId});
+        const otherComments = await Comment.find({threadId:thread});
+        return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Comment has been deleted', otherComments));
+
+    }
 }
 
 export default new forumController();

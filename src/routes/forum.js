@@ -6,11 +6,14 @@ import forumController from '../components/forum/forumController';
 const forumRouter = Router();
 
 // Create thread
-forumRouter.post('/create', checkAuth, forumController.validateCreate, forumController.create);
+forumRouter.post('/create', checkAuth, forumController.validateCreate, forumController.getMentions, forumController.create);
 forumRouter.get('/:category', checkAuth, forumController.categoryThread);
 forumRouter.get('/:category/:threadId', checkAuth, forumController.getThread);
-forumRouter.post('/comment', checkAuth, forumController.validateComment, forumController.createComment);
-
+forumRouter.post('/comment', checkAuth, forumController.validateComment, forumController.getMentions, forumController.createComment);
+forumRouter.put('/edit', checkAuth, forumController.updateThread);
+forumRouter.put('/comment/modify', checkAuth, forumController.modifyComment);
+forumRouter.delete('/:threadId', checkAuth, forumController.deleteThread);
+forumRouter.delete('/comment/:commentId', checkAuth, forumController.deleteComment);
 // get all available categories
 // forumRouter.get('/category', checkAuth, forumController.allCategory);
 

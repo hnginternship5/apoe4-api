@@ -5,11 +5,11 @@ import QuestionController from '../components/questions/questionController';
 
 const questionRouter = Router();
 
-questionRouter.post('/getQuestion',checkAuth, QuestionController.getQuestion);
+questionRouter.post('/getQuestion', checkAuth, QuestionController.getQuestion);
+questionRouter.post('/getQuestion/:child', checkAuth, QuestionController.getChildQuestion);
 
 //Create Questions
-questionRouter.post('/createQuestion',checkAuth, QuestionController.createQuestion);
-
+questionRouter.post('/createQuestion', QuestionController.createQuestion);
 
 
 module.exports = questionRouter;

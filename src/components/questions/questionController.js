@@ -86,8 +86,8 @@ class QuestionController {
                         status: 1
                     })
                 }
-            }, 3000)
-        })
+            }, 3000);
+        });
     }
 
     /**
@@ -119,5 +119,21 @@ class QuestionController {
             return res.status(httpErrorCodes.INTERNAL_SERVER_ERROR).json(JsendSerializer.fail('An internal Server error has occured!', err, 500));
         }
     }
+
+    //update questions
+    async updateQuestion(req, res, next) {
+        try {
+            const id = req.params.questionId;
+            await QuestionModel.update({});
+            return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Question created!', Question, 201));
+        } catch (err) {
+            console.log(err);
+            return res.status(httpErrorCodes.INTERNAL_SERVER_ERROR).json(JsendSerializer.fail('An internal Server error has occured!', err, 500));
+        }
+    }
 }
+
+
+
+
 export default new QuestionController();

@@ -16,11 +16,6 @@ const forumSchema = new Schema({
         ref: 'User',
         trim: true,
     },
-    catId: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: 'Category',
-    },
     status: {
         type: String,
         required: true,

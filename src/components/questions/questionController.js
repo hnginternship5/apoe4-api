@@ -23,17 +23,29 @@ class QuestionController {
 
 
     async getQuestion(req, res, next) {
-        QuestionModel.Question.find({ type: req.body.type }, (err, questions) => {
-            if (err) {
+        let timeOfDay = new Date().getHours();
+        var dt = new Date();
+            //let tod
+        dt.setDate(dt.getDate() - 1);
+        console.log(dt);
+        let type = "";
+        if (timeOfDay < 12) {
+            type = "Morning"
+        } else if (timeOfDay < 18) {
+            type = "Noon"
+        } else if (timeOfDay <= 24) {
+            type = "Night"
+        }
+
+        QuestionModel.Question.find({ type }, (err, questions) => {
+            if (err) { 
                 return res.status(500).json({
                     error: err
                 });
             }
-            var dt = new Date();
-            dt.setDate(dt.getDate() - 1);
-            console.log(dt);
+            //console.log(questions);
             questions.map((question) => {
-                answerModel.Answer.findOne({ question: question.id, created: { $lt: dt } })
+                answerModel.Answer.findOne({ question: question.id, owner: req.owner, created: {$lt: dt} })
                     .exec(function(err, answer) {
                         if (answer == null && !res.headersSent) {
                             return res.status(200).json({

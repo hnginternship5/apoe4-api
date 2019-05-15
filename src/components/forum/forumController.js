@@ -195,7 +195,6 @@ class forumController {
     }
 
     // TODO: implement notification for mention users
-    // FIXME: regex replaces name in between 'a' tag
     getMentions(req,res,next) {
         return new Promise((resolve,reject)=>{
             const regex = /@\w+/g;
@@ -210,7 +209,8 @@ class forumController {
                 arr.shift();
                     
                 if(mention) {
-                    req.body.post = req.body.post.replace(data,`<a href="/users/${mention.id}">${data}</a>`);
+                    const regex = new RegExp(data,'g');
+                    req.body.post = req.body.post.replace(regex,`<a href="/users/${mention.id}">${temp}</a>`);
                 }     
             }); 
             

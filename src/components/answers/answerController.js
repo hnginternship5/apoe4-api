@@ -25,6 +25,7 @@ class AnswerController {
 
     async createAnswer(req, res, next) {
         try {
+            
             const Answer = await AnswerModel.Answer.create(req.body);
             return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Answer created!', Answer, 201));
         } catch (err) {

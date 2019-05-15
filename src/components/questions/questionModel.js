@@ -9,12 +9,11 @@ const QuestionSchema = new Schema({
     },
     text: {
         type: String,
-        ref: 'User',
         required: true
     },
-    child: {
-        type: String,
-        required: false
+    position: {
+        type:  Number,
+        default: 0
     },
     type: {
         type: String,

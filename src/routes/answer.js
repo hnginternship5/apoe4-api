@@ -6,7 +6,7 @@ import AnswerController from '../components/answers/answerController';
 const answerRouter = Router();
 
 //Create Answers
-answerRouter.post('/answers', checkAuth, helpers.reassignOwner, AnswerController.createAnswer);
+answerRouter.post('/:questionId', checkAuth, helpers.reassignOwner, AnswerController.createAnswer);
 
 
 

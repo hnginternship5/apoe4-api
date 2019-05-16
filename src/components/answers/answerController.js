@@ -1,6 +1,7 @@
 import AnswerModel from "./answerModel";
 import JsendSerializer from '../../util/JsendSerializer';
 import httpErrorCodes from '../../util/httpErrorCodes';
+import questionModel from "../questions/questionModel";
 
 class AnswerController {
     /**
@@ -25,10 +26,27 @@ class AnswerController {
 
     async createAnswer(req, res, next) {
         try {
-            const Answer = await AnswerModel.Answer.create(req.body);
+            const {text} = req.body;
+            const {questionId} = req.params;
+
+            if (!questionId) {
+                return res.status(httpErrorCodes.BAD_REQUEST).json(JsendSerializer.fail('No question selected!', null, 400));
+            }
+
+            const question = await questionModel.Question.findById(questionId);
+
+            if (!question) {
+                return res.status(httpErrorCodes.NOT_FOUND).json(JsendSerializer.fail('Question not found!', null, 404));
+            }
+
+            const Answer = new AnswerModel.Answer();
+            Answer.question = questionId;
+            Answer.text = text;
+            Answer.owner = req.owner;
+
+            await Answer.save();
             return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Answer created!', Answer, 201));
         } catch (err) {
-            console.log(err)
             return res.status(httpErrorCodes.INTERNAL_SERVER_ERROR).json(JsendSerializer.fail('An internal Server error has occured!', err, 500));
         }
     }

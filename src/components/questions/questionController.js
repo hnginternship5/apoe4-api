@@ -3,8 +3,10 @@ import JsendSerializer from '../../util/JsendSerializer';
 import httpErrorCodes from '../../util/httpErrorCodes';
 import answerModel from "../answers/answerModel";
 import mongoose from "mongoose";
+import questionHelper from "./questionHelper";
 
 class QuestionController {
+
     /**
      * @api {post} /questions/getQuestion Get a Question
      * @apiName questions/getQuestion
@@ -50,29 +52,56 @@ class QuestionController {
         const arrayAnswers = [];
         for (let i = 0; i < answers.length; i++) {
             const element = answers[i]['question'];
-            arrayAnswers.push(element);
+            arrayAnswers.push(JSON.stringify(element));
         }
 
-        questions.forEach(question => {
-            if (arrayAnswers.length > 0) {
-                const qId = question._id;
-                const checkAnswered = arrayAnswers.includes(qId);
+        let questionType = false;
+        let questionPosition = false;
 
-                if (!checkAnswered || question.type == "Register" || question.type == type || question.position <= 1) {
-                    console.log(question)
+        for (let i = 0; i < questions.length; i++) {
+            const question = questions[i];
+            if (arrayAnswers.length > 0) {
+                const answered = await questionHelper.checkAnsweredQuestion(question, arrayAnswers);
+
+                if (answered) {
+                    questionType = await questionHelper.checkQuestionType(question, type);
+                } else {
+                    continue
+                }
+
+                if (questionType) {
+                    questionPosition = await questionHelper.checkPositionOfQuestion(question);
+                } else {
+                    continue
+                }
+
+                if (questionPosition) {
                     return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions sent!', question, 200));
+                    // break;
+                } else {
+                    continue
                 }
             } else {
-                if (question.type == "Register" || question.type == type || question.position <= 1) {
+                questionType = await questionHelper.checkQuestionType(question, type);
+                if (questionType) {
+                    questionPosition = await questionHelper.checkPositionOfQuestion(question);
+                } else {
+                    continue
+                }
+
+                if (questionPosition) {
                     return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions sent!', question, 200));
+                    // break;
+                } else {
+                    continue
                 }
             }
-        });
-
-
+        }
 
         return res.status(httpErrorCodes.NOT_FOUND).json(JsendSerializer.fail('No question found!', null, 404));
     }
+
+
 
     //This isn't meant to work for now, the admin dashboard to be created will be needed in doing the mapping
     async getChildQuestion(req, res, next) {

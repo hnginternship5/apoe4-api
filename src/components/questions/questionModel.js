@@ -4,14 +4,16 @@ import timestamps from 'mongoose-timestamp';
 const Schema = mongoose.Schema;
 
 const QuestionSchema = new Schema({
+    _id: {
+        type: mongoose.Schema.Types.ObjectId,
+    },
     text: {
         type: String,
-        ref: 'User',
         required: true
     },
-    child: {
-        type: String,
-        required: false
+    position: {
+        type:  Number,
+        default: 0
     },
     type: {
         type: String,
@@ -20,6 +22,10 @@ const QuestionSchema = new Schema({
     },
     options: {
         type: [String]
+    },
+    category: {
+        type: String,
+        required: true
     }
 });
 

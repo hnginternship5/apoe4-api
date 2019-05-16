@@ -2,17 +2,12 @@ import mongoose from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 
 const Schema = mongoose.Schema;
-
+const createTime = new Date().toDateString();
 const AnswerSchema = new Schema({
     question: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Question',
         required: true
-    },
-    child: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Follow-up Question',
-        required: false
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
@@ -23,7 +18,7 @@ const AnswerSchema = new Schema({
         type: String,
         required: true
     },
-    created: { type: Date, default: Date.now() }
+    created: { type: String, default: createTime }
 });
 
 const Answer = mongoose.model('Answer', AnswerSchema);

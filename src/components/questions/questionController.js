@@ -20,7 +20,7 @@ class QuestionController {
      * @apiError {String} Response An internal Server error has occured!
      *
      *
-     * @apiparam {String} type Morning, Noon, Night, Register
+     * @apiparam {String} category Register, Daily, IADL.
      */
 
 
@@ -52,6 +52,7 @@ class QuestionController {
         const arrayAnswers = [];
         for (let i = 0; i < answers.length; i++) {
             const element = answers[i]['question'];
+            console.log(element);
             arrayAnswers.push(JSON.stringify(element));
         }
 
@@ -66,34 +67,34 @@ class QuestionController {
                 if (answered) {
                     questionType = await questionHelper.checkQuestionType(question, type);
                 } else {
-                    continue
+                    continue;
                 }
 
                 if (questionType) {
                     questionPosition = await questionHelper.checkPositionOfQuestion(question);
                 } else {
-                    continue
+                    continue;
                 }
 
                 if (questionPosition) {
                     return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions sent!', question, 200));
                     // break;
                 } else {
-                    continue
+                    continue;
                 }
             } else {
                 questionType = await questionHelper.checkQuestionType(question, type);
                 if (questionType) {
                     questionPosition = await questionHelper.checkPositionOfQuestion(question);
                 } else {
-                    continue
+                    continue;
                 }
 
                 if (questionPosition) {
                     return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions sent!', question, 200));
                     // break;
                 } else {
-                    continue
+                    continue;
                 }
             }
         }
@@ -153,9 +154,10 @@ class QuestionController {
      *
      *
      * @apiparam {String} text String of text to represent the question. e.g How was your day?
-     * @apiparam {String} type Morning, Noon, Night, Register
-     * @apiparam {Array} options Array of the User's Options
-     
+     * @apiparam {String} type Morning, Noon, Night, Register.
+     * @apiparam {Array} options Array of the User's Options.
+     * @apiparam {String} category Category of question. i.e Register, Daily, IADL.
+     * @apiparam {Number} position This parameter is still worked on, it's optional for now.
      */
 
 
@@ -168,6 +170,26 @@ class QuestionController {
             return res.status(httpErrorCodes.INTERNAL_SERVER_ERROR).json(JsendSerializer.fail('An internal Server error has occured!', err, 500));
         }
     }
+
+    /**
+     * @api {patch} /questions/updateQuestion Updating a question
+     * @apiName questions/updateQuestion
+     * @apiVersion 1.0.0
+     * @apiGroup Questions
+     *
+     *
+     * @apiSuccess {String} Response Questions updated successfully!
+     *
+     *
+     * @apiError {String} Response An internal Server error has occured!
+     *
+     *
+     * @apiparam {String} text String of text to represent the question. e.g How was your day?
+     * @apiparam {String} type Morning, Noon, Night, Register.
+     * @apiparam {Array} options Array of the User's Options.
+     * @apiparam {String} category Category of question. i.e Register, Daily, IADL.
+     * @apiparam {Number} position This parameter is still worked on, it's optional for now.
+     */
 
     //update questions
     async updateQuestion(req, res, next) {
@@ -203,11 +225,26 @@ class QuestionController {
         }
     }
 
+    /**
+     * @api {get} /questions/all Getting all questions
+     * @apiName questions/all
+     * @apiVersion 1.0.0
+     * @apiGroup Questions
+     *
+     *
+     * @apiSuccess {String} Response Questions registered successfully!
+     *
+     *
+     * @apiError {String} Response An internal Server error has occured!
+     *
+     *
+     */
+
     //get all questions
     async allQuestions(req, res) {
         const all = await QuestionModel.Question.find({});
 
-        return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Question created!', all, 201));
+        return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions are:', all, 201));
     }
 }
 

@@ -7,7 +7,7 @@ const questionRouter = Router();
 
 questionRouter.post('/getQuestion', checkAuth, QuestionController.getQuestion);
 questionRouter.post('/getQuestion/:child', checkAuth, QuestionController.getChildQuestion);
-questionRouter.get('/all', QuestionController.allQuestions)
+questionRouter.get('/all', QuestionController.allQuestions);
 
 //Create Questions
 questionRouter.post('/createQuestion', QuestionController.createQuestion);

@@ -23,7 +23,7 @@ class QuestionController {
 
 
     async getQuestion(req, res, next) {
-        const {category} = req.body;
+        const { category } = req.body;
         let timeOfDay = new Date().getHours();
         var dt = new Date().toDateString();
 
@@ -40,36 +40,36 @@ class QuestionController {
             type = "Night"
         }
 
-        const questions = await QuestionModel.Question.find({category});
+        const questions = await QuestionModel.Question.find({ category });
 
         if (!questions) {
             return res.status(httpErrorCodes.NOT_FOUND).json(JsendSerializer.fail('No question found!', null, 404));
         }
 
-        const answers = await answerModel.Answer.find({created: dt, owner: req.owner}, 'question -_id');
+        const answers = await answerModel.Answer.find({ created: dt, owner: req.owner }, 'question -_id');
         const arrayAnswers = [];
         for (let i = 0; i < answers.length; i++) {
             const element = answers[i]['question'];
             arrayAnswers.push(element);
         }
-        
+
         questions.forEach(question => {
             if (arrayAnswers.length > 0) {
                 const qId = question._id;
                 const checkAnswered = arrayAnswers.includes(qId);
-                
-                if (!checkAnswered || question.type == "Register" || question.type == type || question.position <=1) {
+
+                if (!checkAnswered || question.type == "Register" || question.type == type || question.position <= 1) {
                     console.log(question)
                     return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions sent!', question, 200));
                 }
-            } else{
-                if (question.type == "Register" || question.type == type || question.position <=1) {
+            } else {
+                if (question.type == "Register" || question.type == type || question.position <= 1) {
                     return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions sent!', question, 200));
                 }
             }
         });
 
-        
+
 
         return res.status(httpErrorCodes.NOT_FOUND).json(JsendSerializer.fail('No question found!', null, 404));
     }
@@ -144,7 +144,7 @@ class QuestionController {
     async updateQuestion(req, res, next) {
         try {
             const id = req.params.questionId;
-            const {text, type, category, position, options} = req.body;
+            const { text, type, category, position, options } = req.body;
 
             const question = await QuestionModel.Question.findById(id);
             if (!question) {
@@ -154,19 +154,19 @@ class QuestionController {
                 question.text = text;
             }
             if (type) {
-                question.type = type
+                question.type = type;
             }
             if (category) {
-                question.category = category
+                question.category = category;
             }
             if (position) {
-                question.position = position
+                question.position = position;
             }
             if (options) {
-                question.options = options
+                question.options = options;
             }
-            
-            await question.save()
+
+            await question.save();
             return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Question Updated Successfully!', question, 201));
         } catch (err) {
             console.log(err);
@@ -174,7 +174,8 @@ class QuestionController {
         }
     }
 
-    async allQuestions(req, res){
+    //get all questions
+    async allQuestions(req, res) {
         const all = await QuestionModel.Question.find({});
 
         return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Question created!', all, 201));

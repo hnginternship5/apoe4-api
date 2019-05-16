@@ -13,7 +13,7 @@ questionRouter.get('/all', QuestionController.allQuestions)
 questionRouter.post('/createQuestion', QuestionController.createQuestion);
 
 //update Questions
-questionRouter.patch('/updateQuestion:questionId', QuestionController.updateQuestion);
+questionRouter.patch('/updateQuestion/:questionId', QuestionController.updateQuestion);
 
 
 module.exports = questionRouter;

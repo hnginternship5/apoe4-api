@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 import questionHelper from "./questionHelper";
 
 class QuestionController {
-    
+
     /**
      * @api {post} /questions/getQuestion Get a Question
      * @apiName questions/getQuestion
@@ -20,12 +20,12 @@ class QuestionController {
      * @apiError {String} Response An internal Server error has occured!
      *
      *
-     * @apiparam {String} type Morning, Noon, Night, Register
+     * @apiparam {String} category Register, Daily, IADL.
      */
 
 
     async getQuestion(req, res, next) {
-        const {category} = req.body;
+        const { category } = req.body;
         let timeOfDay = new Date().getHours();
         var dt = new Date().toDateString();
 
@@ -42,19 +42,20 @@ class QuestionController {
             type = "Night"
         }
 
-        const questions = await QuestionModel.Question.find({category});
+        const questions = await QuestionModel.Question.find({ category });
 
         if (!questions) {
             return res.status(httpErrorCodes.NOT_FOUND).json(JsendSerializer.fail('No question found!', null, 404));
         }
 
-        const answers = await answerModel.Answer.find({created: dt, owner: req.owner}, 'question -_id');
+        const answers = await answerModel.Answer.find({ created: dt, owner: req.owner }, 'question -_id');
         const arrayAnswers = [];
         for (let i = 0; i < answers.length; i++) {
             const element = answers[i]['question'];
+            console.log(element);
             arrayAnswers.push(JSON.stringify(element));
         }
-        
+
         let questionType = false;
         let questionPosition = false;
 
@@ -62,38 +63,38 @@ class QuestionController {
             const question = questions[i];
             if (arrayAnswers.length > 0) {
                 const answered = await questionHelper.checkAnsweredQuestion(question, arrayAnswers);
-                
+
                 if (answered) {
                     questionType = await questionHelper.checkQuestionType(question, type);
-                } else{
-                    continue
+                } else {
+                    continue;
                 }
 
                 if (questionType) {
                     questionPosition = await questionHelper.checkPositionOfQuestion(question);
-                } else{
-                    continue
+                } else {
+                    continue;
                 }
 
                 if (questionPosition) {
-                   return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions sent!', question, 200));
-                   // break;
-                }else{
-                    continue
+                    return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions sent!', question, 200));
+                    // break;
+                } else {
+                    continue;
                 }
-            } else{
+            } else {
                 questionType = await questionHelper.checkQuestionType(question, type);
                 if (questionType) {
                     questionPosition = await questionHelper.checkPositionOfQuestion(question);
-                } else{
-                    continue
+                } else {
+                    continue;
                 }
 
                 if (questionPosition) {
-                   return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions sent!', question, 200));
-                   // break;
-                }else{
-                    continue
+                    return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions sent!', question, 200));
+                    // break;
+                } else {
+                    continue;
                 }
             }
         }
@@ -101,7 +102,7 @@ class QuestionController {
         return res.status(httpErrorCodes.NOT_FOUND).json(JsendSerializer.fail('No question found!', null, 404));
     }
 
-    
+
 
     //This isn't meant to work for now, the admin dashboard to be created will be needed in doing the mapping
     async getChildQuestion(req, res, next) {
@@ -153,9 +154,10 @@ class QuestionController {
      *
      *
      * @apiparam {String} text String of text to represent the question. e.g How was your day?
-     * @apiparam {String} type Morning, Noon, Night, Register
-     * @apiparam {Array} options Array of the User's Options
-     
+     * @apiparam {String} type Morning, Noon, Night, Register.
+     * @apiparam {Array} options Array of the User's Options.
+     * @apiparam {String} category Category of question. i.e Register, Daily, IADL.
+     * @apiparam {Number} position This parameter is still worked on, it's optional for now.
      */
 
 
@@ -169,11 +171,31 @@ class QuestionController {
         }
     }
 
+    /**
+     * @api {patch} /questions/updateQuestion Updating a question
+     * @apiName questions/updateQuestion
+     * @apiVersion 1.0.0
+     * @apiGroup Questions
+     *
+     *
+     * @apiSuccess {String} Response Questions updated successfully!
+     *
+     *
+     * @apiError {String} Response An internal Server error has occured!
+     *
+     *
+     * @apiparam {String} text String of text to represent the question. e.g How was your day?
+     * @apiparam {String} type Morning, Noon, Night, Register.
+     * @apiparam {Array} options Array of the User's Options.
+     * @apiparam {String} category Category of question. i.e Register, Daily, IADL.
+     * @apiparam {Number} position This parameter is still worked on, it's optional for now.
+     */
+
     //update questions
     async updateQuestion(req, res, next) {
         try {
             const id = req.params.questionId;
-            const {text, type, category, position, options} = req.body;
+            const { text, type, category, position, options } = req.body;
 
             const question = await QuestionModel.Question.findById(id);
             if (!question) {
@@ -183,19 +205,19 @@ class QuestionController {
                 question.text = text;
             }
             if (type) {
-                question.type = type
+                question.type = type;
             }
             if (category) {
-                question.category = category
+                question.category = category;
             }
             if (position) {
-                question.position = position
+                question.position = position;
             }
             if (options) {
-                question.options = options
+                question.options = options;
             }
-            
-            await question.save()
+
+            await question.save();
             return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Question Updated Successfully!', question, 201));
         } catch (err) {
             console.log(err);
@@ -203,10 +225,26 @@ class QuestionController {
         }
     }
 
-    async allQuestions(req, res){
+    /**
+     * @api {get} /questions/all Getting all questions
+     * @apiName questions/all
+     * @apiVersion 1.0.0
+     * @apiGroup Questions
+     *
+     *
+     * @apiSuccess {String} Response Questions registered successfully!
+     *
+     *
+     * @apiError {String} Response An internal Server error has occured!
+     *
+     *
+     */
+
+    //get all questions
+    async allQuestions(req, res) {
         const all = await QuestionModel.Question.find({});
 
-        return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Question created!', all, 201));
+        return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions are:', all, 201));
     }
 }
 

@@ -1,22 +1,14 @@
 import mongoose from 'mongoose';
-import timestamps from 'mongoose-timestamp';
 
 const Schema = mongoose.Schema;
 
 const QuestionSchema = new Schema({
-    _id: {
-        type: mongoose.Schema.Types.ObjectId,
-    },
     text: {
         type: String,
         required: true
     },
     child: {
         type: String,
-    },
-    position: {
-        type: Number,
-        default: 0
     },
     type: {
         type: String,

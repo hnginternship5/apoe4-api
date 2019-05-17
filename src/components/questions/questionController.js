@@ -198,10 +198,18 @@ class QuestionController {
      */
 
 
-    async createQuestion(req, res, next) {
+    async createQuestion(req, res) {
+        const {text, type, options, category} = req.body
         try {
-            const Question = await QuestionModel.Question.create(req.body);
-            return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Question created!', Question, 201));
+            const question = new QuestionModel.Question();
+
+            question.text = text;
+            question.type = type;
+            question.options = options;
+            question.category = category;
+
+            await question.save();
+            return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Question created!', question, 201));
         } catch (err) {
             console.log(err)
             return res.status(httpErrorCodes.INTERNAL_SERVER_ERROR).json(JsendSerializer.fail('An internal Server error has occured!', err, 500));

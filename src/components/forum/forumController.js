@@ -1,6 +1,6 @@
 import Forum from './forumModel';
 import Comment from './comments';
-import {User} from '../user/userModel';
+import { User } from '../user/userModel';
 import AppError from '../../handlers/AppError';
 import JsendSerializer from '../../util/JsendSerializer';
 import httpErrorCodes from '../../util/httpErrorCodes';
@@ -10,37 +10,9 @@ import httpErrorCodes from '../../util/httpErrorCodes';
 
 class forumController {
     //constructor() {
-      //  this.getUserProfile = this.getUserProfile.bind(this);
+    //  this.getUserProfile = this.getUserProfile.bind(this);
     //}
 
-    /**
-     * @api {post} /forum/create create thread in forum
-     * @apiName forum/
-     * @apiVersion 1.0.0
-     * @apiGroup Forum
-     *
-     *
-     * @apiSuccess {Object} data userdetails.
-     *
-     * @apiSuccessExample Success-Response:
-     *   HTTP/1.1 200 OK
-     *  {
-     *     "status": "success",
-     *      "message": "User retrieved successfully.",
-     *       "code": 200,
-     *       "data": {
-     *           "active": true,
-     *           "isVerified": false,
-     *           "_id": "5cacc39d97273e4d779d8310",
-     *           "email": "johndoe@example.com",
-     *           "firstName": "John",
-     *           "lastName": "doe",
-     *           "updatedAt": "2019-04-09T16:09:01.969Z",
-     *           "createdAt": "2019-04-09T16:09:01.969Z",
-     *           "__v": 0
-     *  }
-     * @apiparam {String} userId User's Id
-     */
 
     async create(req, res, next) {
         const newForum = new Forum({
@@ -51,15 +23,15 @@ class forumController {
 
         try {
             await newForum.save();
-        }catch(e) {
+        } catch (e) {
             return next(
                 new AppError(e.message || 'An error occured creating category', httpErrorCodes.INTERNAL_SERVER_ERROR, true)
             );
         }
 
         return res.status(httpErrorCodes.CREATED).json({
-                message: 'Thread created'
-            });
+            message: 'Thread created'
+        });
 
     }
 
@@ -70,12 +42,12 @@ class forumController {
         let thread = await Forum.find().populate('author', 'firstName');
 
         for (let i of Object.keys(thread)) {
-            let commentCount = await Comment.countDocuments({threadId: thread[i]._id});
-            thread[i]= {...thread[i]._doc, commentCount};
+            let commentCount = await Comment.countDocuments({ threadId: thread[i]._id });
+            thread[i] = {...thread[i]._doc, commentCount };
         }
 
         return res.status(httpErrorCodes.OK).json(JsendSerializer.success('threads available', thread));
-                
+
     };
 
     async getThread(req, res, next) {
@@ -86,7 +58,7 @@ class forumController {
 
         let comments = await Comment.findOne({
             threadId: thread[0]._id
-        }).populate('author','firstName');
+        }).populate('author', 'firstName');
         //comment = [1,2,3];
         console.log(thread[0]._id);
 
@@ -96,7 +68,7 @@ class forumController {
         }
 
         return res.status(httpErrorCodes.OK).json(JsendSerializer.success('threads available', result));
-                
+
     };
 
     async createComment(req, res, next) {
@@ -122,7 +94,7 @@ class forumController {
 
         try {
             await comments.save();
-        }catch(e) {
+        } catch (e) {
             return next(
                 new AppError(e.message || 'An error occured creating comments', httpErrorCodes.INTERNAL_SERVER_ERROR, true)
             );
@@ -133,7 +105,7 @@ class forumController {
         }).populate('author', 'firstName');
 
         return res.status(httpErrorCodes.CREATED).json(JsendSerializer.success('comment created', commentResult));
-                
+
     };
 
     validateCreate(req, res, next) {
@@ -173,11 +145,11 @@ class forumController {
     }
 
     // TODO: implement notification for mention users
-    getMentions(req,res,next) {
-        return new Promise((resolve,reject)=>{
+    getMentions(req, res, next) {
+        return new Promise((resolve, reject) => {
             const regex = /@\w+/g;
             const arr = req.body.post.match(regex);
-            arr.forEach(async data=>{
+            arr.forEach(async data => {
                 console.log(data);
                 const temp = data.slice(1);
                 const mention = await User.findOne({
@@ -185,22 +157,22 @@ class forumController {
                 });
 
                 arr.shift();
-                    
-                if(mention) {
-                    const regex = new RegExp(data,'g');
-                    req.body.post = req.body.post.replace(regex,`<a href="/users/${mention.id}">${temp}</a>`);
-                }     
-            }); 
-            
-            setInterval(()=>{
+
+                if (mention) {
+                    const regex = new RegExp(data, 'g');
+                    req.body.post = req.body.post.replace(regex, `<a href="/users/${mention.id}">${temp}</a>`);
+                }
+            });
+
+            setInterval(() => {
                 if (arr.length == 0) resolve();
-            },100);
+            }, 100);
         }).then(() => next());
     }
 
 
-    async updateThread(req, res){
-        const {id, title, body} = req.body;
+    async updateThread(req, res) {
+        const { id, title, body } = req.body;
 
         let thread = await Forum.findOne({
             _id: id
@@ -212,13 +184,13 @@ class forumController {
             return res.status(httpErrorCodes.NOT_FOUND).json(errorResponse)
         }
 
-        if (thread && req.owner != thread.author._id ) {
+        if (thread && req.owner != thread.author._id) {
             const errorResponse = JsendSerializer
                 .fail('Unauthorized', null, httpErrorCodes.UNAUTHORIZED);
             return res.status(httpErrorCodes.UNAUTHORIZED).json(errorResponse)
         }
 
-        if(title){
+        if (title) {
             thread.title = title;
         }
         if (body) {
@@ -229,8 +201,8 @@ class forumController {
         return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Thread updated', thread));
     }
 
-    async modifyComment(req, res){
-        const {id, comment, threadId} = req.body;
+    async modifyComment(req, res) {
+        const { id, comment, threadId } = req.body;
         let commentForum = await Comment.findById(id);
 
         if (!commentForum) {
@@ -259,8 +231,8 @@ class forumController {
         return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Comment modified', commentForum));
     }
 
-    async deleteThread(req, res){
-        const {threadId} = req.params;
+    async deleteThread(req, res) {
+        const { threadId } = req.params;
 
         let thread = await Forum.findById(threadId);
 
@@ -270,7 +242,7 @@ class forumController {
             return res.status(httpErrorCodes.NOT_FOUND).json(errorResponse)
         }
 
-        if (thread && req.owner != thread.author._id ) {
+        if (thread && req.owner != thread.author._id) {
             const errorResponse = JsendSerializer
                 .fail('Unauthorized', null, httpErrorCodes.UNAUTHORIZED);
             return res.status(httpErrorCodes.UNAUTHORIZED).json(errorResponse)
@@ -292,8 +264,8 @@ class forumController {
 
     }
 
-    async deleteComment(req, res){
-        const {commentId} = req.params;
+    async deleteComment(req, res) {
+        const { commentId } = req.params;
 
         const comment = await Comment.findById(commentId);
 
@@ -303,7 +275,7 @@ class forumController {
             return res.status(httpErrorCodes.NOT_FOUND).json(errorResponse)
         }
 
-        if (comment && req.owner != comment.author._id ) {
+        if (comment && req.owner != comment.author._id) {
             const errorResponse = JsendSerializer
                 .fail('Unauthorized', null, httpErrorCodes.UNAUTHORIZED);
             return res.status(httpErrorCodes.UNAUTHORIZED).json(errorResponse)
@@ -311,8 +283,8 @@ class forumController {
 
         let thread = comment.threadId;
 
-        await Comment.deleteOne({_id:commentId});
-        const otherComments = await Comment.find({threadId:thread});
+        await Comment.deleteOne({ _id: commentId });
+        const otherComments = await Comment.find({ threadId: thread });
         return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Comment has been deleted', otherComments));
 
     }

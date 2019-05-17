@@ -24,6 +24,10 @@ class QuestionHelper {
             return true;
         }
     }
+
+    checkQuestionExists(answerArray, questionArray){
+        
+    }
 }
 
 const questionHelper = new QuestionHelper();

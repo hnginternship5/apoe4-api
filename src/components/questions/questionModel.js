@@ -11,8 +11,11 @@ const QuestionSchema = new Schema({
         type: String,
         required: true
     },
+    child: {
+        type: String,
+    },
     position: {
-        type:  Number,
+        type: Number,
         default: 0
     },
     type: {

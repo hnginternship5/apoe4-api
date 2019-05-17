@@ -387,67 +387,6 @@ define({ "api": [
   },
   {
     "type": "post",
-    "url": "/auth/reset/:token",
-    "title": "Reset a user's password",
-    "name": "auth_reset__token",
-    "version": "1.0.0",
-    "group": "Auth",
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "optional": false,
-            "field": "An",
-            "description": "<p>email is sent to user with a link and token</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n  Success! Your password has been changed.",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "fields": {
-        "Error 4xx": [
-          {
-            "group": "Error 4xx",
-            "optional": false,
-            "field": "ValidationError",
-            "description": "<p>for invalid input data</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "ValidationError-Response:",
-          "content": "HTTP/1.1 400 Bad Request\n  Password reset token is invalid or has expired.",
-          "type": "json"
-        }
-      ]
-    },
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "password",
-            "description": "<p>User's new password</p>"
-          }
-        ]
-      }
-    },
-    "filename": "src/routes/forgot.js",
-    "groupTitle": "Auth"
-  },
-  {
-    "type": "post",
     "url": "/mails/contact-form",
     "title": "Send a contact request form",
     "name": "mails_",
@@ -559,6 +498,42 @@ define({ "api": [
     "groupTitle": "Mails"
   },
   {
+    "type": "get",
+    "url": "/questions/all",
+    "title": "Getting all questions",
+    "name": "questions_all",
+    "version": "1.0.0",
+    "group": "Questions",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Response",
+            "description": "<p>Questions registered successfully!</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "Response",
+            "description": "<p>An internal Server error has occured!</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/components/questions/questionController.js",
+    "groupTitle": "Questions"
+  },
+  {
     "type": "post",
     "url": "/questions/createQuestion",
     "title": "Creating a question",
@@ -606,14 +581,28 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "type",
-            "description": "<p>Morning, Noon, Night, Register</p>"
+            "description": "<p>Morning, Noon, Night, Register.</p>"
           },
           {
             "group": "Parameter",
             "type": "Array",
             "optional": false,
             "field": "options",
-            "description": "<p>Array of the User's Options</p>"
+            "description": "<p>Array of the User's Options.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "category",
+            "description": "<p>Category of question. i.e Register, Daily, IADL.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "position",
+            "description": "<p>This parameter is still worked on, it's optional for now.</p>"
           }
         ]
       }
@@ -636,7 +625,196 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "Response",
-            "description": "<p>Question which hasnt been answere or message stating all questions answered</p>"
+            "description": "<p>Question which hasn't been answered or message stating all questions answered</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "Response",
+            "description": "<p>An internal Server error has occured!</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "category",
+            "description": "<p>Register, Daily, IADL.</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/components/questions/questionController.js",
+    "groupTitle": "Questions"
+  },
+  {
+    "type": "patch",
+    "url": "/questions/updateQuestion",
+    "title": "Updating a question",
+    "name": "questions_updateQuestion",
+    "version": "1.0.0",
+    "group": "Questions",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Response",
+            "description": "<p>Questions updated successfully!</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "Response",
+            "description": "<p>An internal Server error has occured!</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "text",
+            "description": "<p>String of text to represent the question. e.g How was your day?</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "type",
+            "description": "<p>Morning, Noon, Night, Register.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Array",
+            "optional": false,
+            "field": "options",
+            "description": "<p>Array of the User's Options.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "category",
+            "description": "<p>Category of question. i.e Register, Daily, IADL.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "position",
+            "description": "<p>This parameter is still worked on, it's optional for now.</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/components/questions/questionController.js",
+    "groupTitle": "Questions"
+  },
+  {
+    "type": "post",
+    "url": "/scoreLogs/createScoreLog",
+    "title": "Creating a question",
+    "name": "scoreLogs_createScoreLog",
+    "version": "1.0.0",
+    "group": "ScoreLogs",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Response",
+            "description": "<p>ScoreLogs Created.</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "Response",
+            "description": "<p>An internal Server error has occured!</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "text",
+            "description": "<p>String of text to represent the question. e.g How was your day?</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "type",
+            "description": "<p>Morning, Noon, Night, Register</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Array",
+            "optional": false,
+            "field": "options",
+            "description": "<p>Array of the User's Options</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/components/scoreLogs/scoreLogController.js",
+    "groupTitle": "ScoreLogs"
+  },
+  {
+    "type": "post",
+    "url": "/scoreLogs/getScoreLog",
+    "title": "Get a ScoreLog",
+    "name": "scoreLogs_getScoreLog",
+    "version": "1.0.0",
+    "group": "ScoreLogs",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "Response",
+            "description": "<p>ScoreLog which hasnt been answere or message stating all scoreLogs answered</p>"
           }
         ]
       }
@@ -667,8 +845,8 @@ define({ "api": [
         ]
       }
     },
-    "filename": "src/components/questions/questionController.js",
-    "groupTitle": "Questions"
+    "filename": "src/components/scoreLogs/scoreLogController.js",
+    "groupTitle": "ScoreLogs"
   },
   {
     "type": "get",

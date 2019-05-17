@@ -4,6 +4,7 @@ import httpErrorCodes from '../../util/httpErrorCodes';
 import answerModel from "../answers/answerModel";
 import mongoose from "mongoose";
 import questionHelper from "./questionHelper";
+import questionModel from "./questionModel";
 
 class QuestionController {
 
@@ -24,13 +25,22 @@ class QuestionController {
      */
 
 
-    async getQuestion(req, res, next) {
-        const { category } = req.body;
+    async getQuestion(req, res) {
+        const {category, nextQuestion} = req.body;
         let timeOfDay = new Date().getHours();
         var dt = new Date().toDateString();
 
         if (!category) {
             return res.status(httpErrorCodes.NOT_FOUND).json(JsendSerializer.fail('Select a catgeory!', null, 404));
+        }
+
+        if (nextQuestion) {
+            const viewQuestion = QuestionModel.Question.findById(nextQuestion);
+
+            if (!viewQuestion) {
+                return res.status(httpErrorCodes.NOT_FOUND).json(JsendSerializer.fail('No question found!', null, 404));
+            }
+            return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions sent!', viewQuestion, 200));
         }
 
         let type = "";
@@ -59,6 +69,18 @@ class QuestionController {
         let questionType = false;
         let questionPosition = false;
 
+        const questionArrayForDailyType = QuestionModel.Question.find({category, type});
+        const specialQuestion = questionModel.Question.find({category, type:"Special"});
+        const specialCount = specialQuestion.length;
+        const typeCount = questionArrayForDailyType.length;
+        const totalcount = typeCount + specialCount;
+        if (type != "Special" && totalcount <= arrayAnswers.length) {
+            return res.status(404).json({
+                msg: "You have answered all the questions",
+                status: 1
+            })
+        }
+
         for (let i = 0; i < questions.length; i++) {
             const question = questions[i];
             if (arrayAnswers.length > 0) {
@@ -76,11 +98,19 @@ class QuestionController {
                     continue;
                 }
 
+                // if (questionExists) {
+                    
+                // }
+
                 if (questionPosition) {
-                    return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions sent!', question, 200));
-                    // break;
-                } else {
-                    continue;
+                    return res.status(200).json({
+                        question: question,
+                        error: false,
+                        status: 0
+                    });
+                   // break;
+                }else{
+                    continue
                 }
             } else {
                 questionType = await questionHelper.checkQuestionType(question, type);
@@ -91,15 +121,22 @@ class QuestionController {
                 }
 
                 if (questionPosition) {
-                    return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions sent!', question, 200));
-                    // break;
-                } else {
-                    continue;
+                    return res.status(200).json({
+                        question: question,
+                        error: false,
+                        status: 0
+                    });
+                   // break;
+                }else{
+                    continue
                 }
             }
         }
 
-        return res.status(httpErrorCodes.NOT_FOUND).json(JsendSerializer.fail('No question found!', null, 404));
+        return res.status(404).json({
+            msg: "You have answered all the questions",
+            status: 1
+        })
     }
 
 

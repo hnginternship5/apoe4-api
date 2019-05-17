@@ -3,7 +3,7 @@ import httpErrorCodes from '../../util/httpErrorCodes';
 import JsendSerializer from '../../util/JsendSerializer';
 import AppError from '../../handlers/AppError';
 import passport from '../../config/passport';
-import {User} from '../user/userModel';
+import { User } from '../user/userModel';
 import { isNullOrUndefined } from 'util';
 import { Dob } from '../user/dobModel';
 import { Whg } from '../user/whgModel';

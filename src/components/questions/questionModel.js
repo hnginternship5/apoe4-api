@@ -4,15 +4,12 @@ import timestamps from 'mongoose-timestamp';
 const Schema = mongoose.Schema;
 
 const QuestionSchema = new Schema({
-    _id: {
-        type: mongoose.Schema.Types.ObjectId,
-    },
     text: {
         type: String,
         required: true
     },
     position: {
-        type:  Number,
+        type: Number,
         default: 0
     },
     type: {

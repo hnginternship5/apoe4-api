@@ -10,7 +10,10 @@ class QuestionHelper {
     }
     
     checkQuestionType(question, type){
-        if (question.type == "Register" || question.type == type) {
+        if (type == "Register" && question.type == "Register" ) {
+            return true
+        }
+        else if (type != "Register" || question.type == type) {
             return true
         } else{
             return false
@@ -25,8 +28,29 @@ class QuestionHelper {
         }
     }
 
-    checkQuestionExists(answerArray, questionArray){
-        
+    checkRegisterQuestionExists(answerArray, questionArray){
+        const arrayAnswers = [];
+        const arrayQuestions = [];
+        for (let i = 0; i < answerArray.length; i++) {
+            const element = answerArray[i]['question'];
+            arrayAnswers.push(JSON.stringify(element));
+        }
+
+        for (let i = 0; i < questionArray.length; i++) {
+            const element = questionArray[i]['_id'];
+            arrayQuestions.push(JSON.stringify(element));
+        }
+
+        let count = 0;
+        arrayQuestions.forEach(question => {
+            //const result = this.checkAnsweredQuestion(question, answerArray);
+            const answered = arrayAnswers.includes(question)
+            if (!answered) {
+                count += 1;
+            }
+        });
+
+        return count;
     }
 }
 

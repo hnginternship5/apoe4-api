@@ -26,114 +26,118 @@ class QuestionController {
 
 
     async getQuestion(req, res) {
-        const {category, nextQuestion} = req.body;
-        let timeOfDay = new Date().getHours();
+        let {type, nextQuestion} = req.body;
+        //let timeOfDay = new Date().getHours();
         var dt = new Date().toDateString();
 
-        if (!category) {
-            return res.status(httpErrorCodes.NOT_FOUND).json(JsendSerializer.fail('Select a catgeory!', null, 404));
-        }
+        // if (!category) {
+        //     return res.status(httpErrorCodes.NOT_FOUND).json(JsendSerializer.fail('Select a catgeory!', null, 404));
+        // }
 
         if (nextQuestion) {
             const viewQuestion = QuestionModel.Question.findById(nextQuestion);
 
             if (!viewQuestion) {
-                return res.status(httpErrorCodes.NOT_FOUND).json(JsendSerializer.fail('No question found!', null, 404));
+                return res.status(httpErrorCodes.OK).json(JsendSerializer.fail('No question found!', null, 404));
             }
             return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions sent!', viewQuestion, 200));
         }
 
-        let type = "";
-        if (timeOfDay < 12) {
-            type = "Morning"
-        } else if (timeOfDay < 18) {
-            type = "Noon"
-        } else if (timeOfDay <= 24) {
-            type = "Night"
-        }
+        // let type = "";
+        // if (timeOfDay < 12) {
+        //     type = "Morning"
+        // } else if (timeOfDay < 18) {
+        //     type = "Noon"
+        // } else if (timeOfDay <= 24) {
+        //     type = "Night"
+        // }
 
-        const questions = await QuestionModel.Question.find({ category });
-
-        if (!questions) {
-            return res.status(httpErrorCodes.NOT_FOUND).json(JsendSerializer.fail('No question found!', null, 404));
-        }
-
+        
         const answers = await answerModel.Answer.find({ created: dt, owner: req.owner }, 'question -_id');
+        const totalAnswer = await answerModel.Answer.find({owner: req.owner}, 'question -_id');
+        const registerQuestions = await QuestionModel.Question.find({type: "Register"}, "_id");
+
+        //return 
         const arrayAnswers = [];
         for (let i = 0; i < answers.length; i++) {
             const element = answers[i]['question'];
-            console.log(element);
             arrayAnswers.push(JSON.stringify(element));
         }
 
         let questionType = false;
         let questionPosition = false;
 
-        const questionArrayForDailyType = QuestionModel.Question.find({category, type});
-        const specialQuestion = questionModel.Question.find({category, type:"Special"});
-        const specialCount = specialQuestion.length;
-        const typeCount = questionArrayForDailyType.length;
-        const totalcount = typeCount + specialCount;
-        if (type != "Special" && totalcount <= arrayAnswers.length) {
-            return res.status(404).json({
-                msg: "You have answered all the questions",
-                status: 1
-            })
+        const registerQuestionRemaining = await questionHelper.checkRegisterQuestionExists(totalAnswer, registerQuestions);
+        if (registerQuestionRemaining > 0) {
+            type = "Register";
+        }
+
+        const questions = await QuestionModel.Question.find({ type });
+
+        if (questions.length < 1) {
+            return res.status(httpErrorCodes.OK).json(JsendSerializer.fail('No question found!', null, 404));
         }
 
         for (let i = 0; i < questions.length; i++) {
             const question = questions[i];
             if (arrayAnswers.length > 0) {
                 const answered = await questionHelper.checkAnsweredQuestion(question, arrayAnswers);
-
                 if (answered) {
                     questionType = await questionHelper.checkQuestionType(question, type);
                 } else {
                     continue;
                 }
-
+                //console.log(questionType)
                 if (questionType) {
-                    questionPosition = await questionHelper.checkPositionOfQuestion(question);
-                } else {
-                    continue;
-                }
-
-                // if (questionExists) {
-                    
-                // }
-
-                if (questionPosition) {
+                    //questionPosition = await questionHelper.checkPositionOfQuestion(question);
                     return res.status(200).json({
                         question: question,
                         error: false,
                         status: 0
                     });
-                   // break;
-                }else{
-                    continue
+                           // break;
+                } else {
+                    continue;
                 }
+
+                // if (questionPosition) {
+                //     return res.status(200).json({
+                //         question: question,
+                //         error: false,
+                //         status: 0
+                //     });
+                //    // break;
+                // }else{
+                //     continue
+                // }
             } else {
                 questionType = await questionHelper.checkQuestionType(question, type);
                 if (questionType) {
-                    questionPosition = await questionHelper.checkPositionOfQuestion(question);
-                } else {
-                    continue;
-                }
-
-                if (questionPosition) {
                     return res.status(200).json({
                         question: question,
                         error: false,
                         status: 0
                     });
-                   // break;
-                }else{
-                    continue
+                    // break;
+                    //questionPosition = await questionHelper.checkPositionOfQuestion(question);
+                } else {
+                    continue;
                 }
+
+                // if (questionPosition) {
+                //     return res.status(200).json({
+                //         question: question,
+                //         error: false,
+                //         status: 0
+                //     });
+                //    // break;
+                // }else{
+                //     continue
+                // }
             }
         }
 
-        return res.status(404).json({
+        return res.status(200).json({
             msg: "You have answered all the questions",
             status: 1
         })

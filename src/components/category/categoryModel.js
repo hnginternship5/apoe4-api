@@ -8,7 +8,7 @@ const CategorySchema = new Schema({
         required: true
     },
     child: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         default: null
     }
 });

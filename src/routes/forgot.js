@@ -31,6 +31,12 @@ forgotRouter.post('/forgot', async (req, res) => {
 
   let user = await User.findOne({email});
 
+  if (!user) {
+    return res.status(400).json({
+      message: 'User does not exist'
+    });
+  }
+
   user.resetPasswordToken = token;
   user.resetPasswordExpires = moment() + 86400000;
 

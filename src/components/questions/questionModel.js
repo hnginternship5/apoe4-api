@@ -16,10 +16,13 @@ const QuestionSchema = new Schema({
         required: true
     },
     options: {
-        type: [String]
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "Option",
+        required: true
     },
     category: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
         required: true
     }
 });

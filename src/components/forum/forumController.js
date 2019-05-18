@@ -319,7 +319,38 @@ class forumController {
         await like.save();
 
         const Response = JsendSerializer
-                .error('Thread liked', httpErrorCodes.OK);
+                .success('Thread liked', httpErrorCodes.OK);
+            return res.status(httpErrorCodes.OK).json(Response)
+    }
+
+    async disLikeThread(req, res) {
+        const { threadId } = req.params;
+        const Thread = await Forum.findById(threadId);
+
+        if (!Thread) {
+            const errorResponse = JsendSerializer
+                .error('Thread does not exist', httpErrorCodes.NOT_FOUND);
+            return res.status(httpErrorCodes.NOT_FOUND).json(errorResponse)
+        }
+
+        const checkLike = await Like.findOne({
+            threadId,
+            author: req.owner,
+        });
+
+        if (!checkLike) {
+            const errorResponse = JsendSerializer
+                .error('You have not liked this thread yet', httpErrorCodes.BAD_REQUEST);
+            return res.status(httpErrorCodes.BAD_REQUEST).json(errorResponse)
+        }
+
+        await Like.findOneAndDelete({
+            threadId,
+            author: req.owner,
+        });
+
+        const Response = JsendSerializer
+                .success('Thread disliked', httpErrorCodes.OK);
             return res.status(httpErrorCodes.OK).json(Response)
     }
 }

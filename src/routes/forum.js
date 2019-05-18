@@ -17,5 +17,8 @@ forumRouter.delete('/comment/:commentId', checkAuth, forumController.deleteComme
 // like thread
 forumRouter.get('/like/:threadId', checkAuth, forumController.likeThread);
 
+// dislike thread
+forumRouter.get('/dislike/:threadId', checkAuth, forumController.disLikeThread);
+
 
 module.exports = forumRouter;

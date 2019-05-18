@@ -2,6 +2,9 @@ import AnswerModel from "./answerModel";
 import JsendSerializer from '../../util/JsendSerializer';
 import httpErrorCodes from '../../util/httpErrorCodes';
 import questionModel from "../questions/questionModel";
+import Option from "../options/optionsModel";
+import scoreLogModel from "../scoreLogs/scoreLogModel";
+import Category from "../category/categoryModel";
 
 class AnswerController {
     /**
@@ -28,27 +31,72 @@ class AnswerController {
         try {
             const {text} = req.body;
             const {questionId} = req.params;
+            const dt = new Date().toDateString();
 
             if (!questionId) {
-                return res.status(httpErrorCodes.BAD_REQUEST).json(JsendSerializer.fail('No question selected!', null, 400));
+                return res.status(httpErrorCodes.OK).json(JsendSerializer.fail('No question selected!', null, 400));
             }
 
             const question = await questionModel.Question.findById(questionId);
 
             if (!question) {
-                return res.status(httpErrorCodes.NOT_FOUND).json(JsendSerializer.fail('Question not found!', null, 404));
+                return res.status(httpErrorCodes.OK).json(JsendSerializer.fail('Question not found!', null, 404));
             }
+
+            const option = await Option.findOne({option:text});
 
             const Answer = new AnswerModel.Answer();
             Answer.question = questionId;
-            Answer.text = text;
+            Answer.text = option._id;
             Answer.owner = req.owner;
 
             await Answer.save();
-            return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Answer created!', Answer, 201));
+            const category = question.category;
+            const score = option.score;
+            let scoreLog = await scoreLogModel.ScoreLog.findOne({category, created: dt, owner: req.owner});
+            let categoryScore = 0;
+            let categoryData = {};
+            if (scoreLog) {
+                scoreLog.answers.push(Answer._id);
+                let currentScore = scoreLog.score
+                if (isNaN(currentScore)) {
+                    currentScore = 0;
+                }
+                scoreLog.score = score + currentScore;
+
+                await scoreLog.save();
+                categoryScore = scoreLog.score;
+            }else{
+                const newScoreLog = new scoreLogModel.ScoreLog();
+                newScoreLog.owner = req.owner;
+                newScoreLog.category = category;
+                newScoreLog.answers = [Answer._id];
+                newScoreLog.score = score;
+
+                await newScoreLog.save();
+                categoryScore = scoreLog.score;
+            }
+            const findCategory = await Category.findById(category);
+            categoryData['name'] = findCategory.category;
+            categoryData['score'] = categoryScore;
+            //categoryData['total'] = ;
+            return res.status(httpErrorCodes.OK).json({
+                Answer,
+                categoryData,
+                message: "Answer created!",
+                status: "success",
+                code: 201
+            });
         } catch (err) {
+            console.log(err)
             return res.status(httpErrorCodes.INTERNAL_SERVER_ERROR).json(JsendSerializer.fail('An internal Server error has occured!', err, 500));
         }
+    }
+
+    async allAnswers(req, res) {
+        const all = await QuestionModel.Question.find({owner: req.owner });
+
+        return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions are:', all, 201));
     }
 }
 export default new AnswerController();

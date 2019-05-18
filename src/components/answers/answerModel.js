@@ -15,7 +15,8 @@ const AnswerSchema = new Schema({
         required: true
     },
     text: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Option',
         required: true
     },
     created: { type: String, default: createTime }

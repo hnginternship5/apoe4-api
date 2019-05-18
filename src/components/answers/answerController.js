@@ -51,6 +51,22 @@ class AnswerController {
             Answer.owner = req.owner;
 
             await Answer.save();
+
+            const numberOfOptions = question.options.length;
+            let scoreOfhighestOption = 0;
+            for (let i = 0; i < numberOfOptions; i++) {
+                const eachoption = question.options[i];  
+                const getOption = await Option.findById(eachoption);
+                const scoreOfOption = getOption.score;
+
+                if (scoreOfOption > scoreOfhighestOption) {
+                    scoreOfhighestOption = scoreOfOption;
+                }
+            
+            }
+            
+            let totalScore = 0;
+
             const category = question.category;
             const score = option.score;
             let scoreLog = await scoreLogModel.ScoreLog.findOne({category, created: dt, owner: req.owner});
@@ -65,7 +81,9 @@ class AnswerController {
                 scoreLog.score = score + currentScore;
 
                 await scoreLog.save();
+                const numberOfAnswers = scoreLog.answers.length;
                 categoryScore = scoreLog.score;
+                totalScore = scoreOfhighestOption * numberOfAnswers;
             }else{
                 const newScoreLog = new scoreLogModel.ScoreLog();
                 newScoreLog.owner = req.owner;
@@ -75,11 +93,12 @@ class AnswerController {
 
                 await newScoreLog.save();
                 categoryScore = scoreLog.score;
+                totalScore = categoryScore;
             }
             const findCategory = await Category.findById(category);
             categoryData['name'] = findCategory.category;
             categoryData['score'] = categoryScore;
-            //categoryData['total'] = ;
+            categoryData['total'] = totalScore;
             return res.status(httpErrorCodes.OK).json({
                 Answer,
                 categoryData,

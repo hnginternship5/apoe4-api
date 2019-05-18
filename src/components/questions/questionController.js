@@ -212,7 +212,7 @@ class QuestionController {
 
             question.text = text;
             question.type = type;
-            question.options = options;
+            question.options = await questionHelper.swapOptionsId(options);
             question.category = category
 
             if (child) {
@@ -299,9 +299,19 @@ class QuestionController {
 
     //get all questions
     async allQuestions(req, res) {
-        const all = await QuestionModel.Question.find({}, "_id options type");
+        const all = await QuestionModel.Question.find({});
 
         return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions are:', all, 201));
+    }
+
+    async deleteQuestion(req, res){
+        const {id} = req.params;
+
+         await QuestionModel.Question.findOneAndRemove({_id:id});
+
+         res.status(200).json({
+             msg: "Success"
+         })
     }
 }
 

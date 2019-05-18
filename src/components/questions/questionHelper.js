@@ -35,6 +35,18 @@ class QuestionHelper {
         return optionNames;
     }
 
+    async swapOptionsId(options){
+        let optionIds = []
+
+        for (let i = 0; i < options.length; i++) {
+            const option = await Option.findOne({option:options[i]});
+            const id = option._id;
+            optionIds.push(id);
+        }
+
+        return optionIds;
+    }
+
     checkRegisterQuestionExists(answerArray, questionArray){
         const arrayAnswers = [];
         const arrayQuestions = [];

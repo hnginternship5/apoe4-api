@@ -1,7 +1,7 @@
 define({ "api": [
   {
     "type": "post",
-    "url": "/answers/",
+    "url": "/answers/:questionId",
     "title": "Create an Answer",
     "name": "answers_",
     "version": "1.0.0",
@@ -14,7 +14,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "Response",
-            "description": "<p>Answers registered successfully!</p>"
+            "description": "<p>Answer created!</p>"
           }
         ]
       }
@@ -512,7 +512,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "Response",
-            "description": "<p>Questions registered successfully!</p>"
+            "description": "<p>Questions returned successfully</p>"
           }
         ]
       }
@@ -595,7 +595,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "category",
-            "description": "<p>Category of question. i.e Register, Daily, IADL.</p>"
+            "description": "<p>Category of question. i.e IADL, Mood etc.</p>"
           },
           {
             "group": "Parameter",
@@ -728,7 +728,7 @@ define({ "api": [
             "type": "String",
             "optional": true,
             "field": "category",
-            "description": "<p>Category of question. i.e Register, Daily, IADL.</p>"
+            "description": "<p>Category of question. i.e Mood, IADL.</p>"
           },
           {
             "group": "Parameter",

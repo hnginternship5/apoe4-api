@@ -4,6 +4,7 @@ import httpErrorCodes from '../../util/httpErrorCodes';
 import answerModel from "../answers/answerModel";
 import mongoose from "mongoose";
 import questionHelper from "./questionHelper";
+import questionModel from "./questionModel";
 
 class QuestionController {
 
@@ -24,82 +25,122 @@ class QuestionController {
      */
 
 
-    async getQuestion(req, res, next) {
-        const { category } = req.body;
-        let timeOfDay = new Date().getHours();
+    async getQuestion(req, res) {
+        let {type, nextQuestion} = req.body;
+        //let timeOfDay = new Date().getHours();
         var dt = new Date().toDateString();
 
-        if (!category) {
-            return res.status(httpErrorCodes.NOT_FOUND).json(JsendSerializer.fail('Select a catgeory!', null, 404));
+        // if (!category) {
+        //     return res.status(httpErrorCodes.NOT_FOUND).json(JsendSerializer.fail('Select a catgeory!', null, 404));
+        // }
+
+        if (nextQuestion) {
+            const viewQuestion = QuestionModel.Question.findById(nextQuestion);
+
+            if (!viewQuestion) {
+                return res.status(httpErrorCodes.OK).json(JsendSerializer.fail('No question found!', null, 404));
+            }
+            return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions sent!', viewQuestion, 200));
         }
 
-        let type = "";
-        if (timeOfDay < 12) {
-            type = "Morning"
-        } else if (timeOfDay < 18) {
-            type = "Noon"
-        } else if (timeOfDay <= 24) {
-            type = "Night"
-        }
+        // let type = "";
+        // if (timeOfDay < 12) {
+        //     type = "Morning"
+        // } else if (timeOfDay < 18) {
+        //     type = "Noon"
+        // } else if (timeOfDay <= 24) {
+        //     type = "Night"
+        // }
 
-        const questions = await QuestionModel.Question.find({ category });
-
-        if (!questions) {
-            return res.status(httpErrorCodes.NOT_FOUND).json(JsendSerializer.fail('No question found!', null, 404));
-        }
-
+        
         const answers = await answerModel.Answer.find({ created: dt, owner: req.owner }, 'question -_id');
+        const totalAnswer = await answerModel.Answer.find({owner: req.owner}, 'question -_id');
+        const registerQuestions = await QuestionModel.Question.find({type: "Register"}, "_id");
+
+        //return 
         const arrayAnswers = [];
         for (let i = 0; i < answers.length; i++) {
             const element = answers[i]['question'];
-            console.log(element);
             arrayAnswers.push(JSON.stringify(element));
         }
 
         let questionType = false;
         let questionPosition = false;
 
+        const registerQuestionRemaining = await questionHelper.checkRegisterQuestionExists(totalAnswer, registerQuestions);
+        if (registerQuestionRemaining > 0) {
+            type = "Register";
+        }
+
+        const questions = await QuestionModel.Question.find({ type });
+
+        if (questions.length < 1) {
+            return res.status(httpErrorCodes.OK).json(JsendSerializer.fail('No question found!', null, 404));
+        }
+
         for (let i = 0; i < questions.length; i++) {
             const question = questions[i];
             if (arrayAnswers.length > 0) {
                 const answered = await questionHelper.checkAnsweredQuestion(question, arrayAnswers);
-
                 if (answered) {
                     questionType = await questionHelper.checkQuestionType(question, type);
                 } else {
                     continue;
                 }
-
+                //console.log(questionType)
                 if (questionType) {
-                    questionPosition = await questionHelper.checkPositionOfQuestion(question);
+                    //questionPosition = await questionHelper.checkPositionOfQuestion(question);
+                    return res.status(200).json({
+                        question: question,
+                        error: false,
+                        status: 0
+                    });
+                           // break;
                 } else {
                     continue;
                 }
 
-                if (questionPosition) {
-                    return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions sent!', question, 200));
-                    // break;
-                } else {
-                    continue;
-                }
+                // if (questionPosition) {
+                //     return res.status(200).json({
+                //         question: question,
+                //         error: false,
+                //         status: 0
+                //     });
+                //    // break;
+                // }else{
+                //     continue
+                // }
             } else {
                 questionType = await questionHelper.checkQuestionType(question, type);
                 if (questionType) {
-                    questionPosition = await questionHelper.checkPositionOfQuestion(question);
+                    return res.status(200).json({
+                        question: question,
+                        error: false,
+                        status: 0
+                    });
+                    // break;
+                    //questionPosition = await questionHelper.checkPositionOfQuestion(question);
                 } else {
                     continue;
                 }
 
-                if (questionPosition) {
-                    return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions sent!', question, 200));
-                    // break;
-                } else {
-                    continue;
-                }
+                // if (questionPosition) {
+                //     return res.status(200).json({
+                //         question: question,
+                //         error: false,
+                //         status: 0
+                //     });
+                //    // break;
+                // }else{
+                //     continue
+                // }
             }
         }
 
-        return res.status(httpErrorCodes.NOT_FOUND).json(JsendSerializer.fail('No question found!', null, 404));
+        return res.status(200).json({
+            msg: "You have answered all the questions",
+            status: 1
+        })
     }
 
 
@@ -161,10 +202,18 @@ class QuestionController {
      */
 
 
-    async createQuestion(req, res, next) {
+    async createQuestion(req, res) {
+        const {text, type, options, category} = req.body
         try {
-            const Question = await QuestionModel.Question.create(req.body);
-            return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Question created!', Question, 201));
+            const question = new QuestionModel.Question();
+
+            question.text = text;
+            question.type = type;
+            question.options = options;
+            question.category = category;
+
+            await question.save();
+            return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Question created!', question, 201));
         } catch (err) {
             console.log(err)
             return res.status(httpErrorCodes.INTERNAL_SERVER_ERROR).json(JsendSerializer.fail('An internal Server error has occured!', err, 500));

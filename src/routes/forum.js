@@ -14,8 +14,11 @@ forumRouter.put('/edit', checkAuth, forumController.updateThread);
 forumRouter.put('/comment/modify', checkAuth, forumController.modifyComment);
 forumRouter.delete('/:threadId', checkAuth, forumController.deleteThread);
 forumRouter.delete('/comment/:commentId', checkAuth, forumController.deleteComment);
-// get all available categories
-// forumRouter.get('/category', checkAuth, forumController.allCategory);
+// like thread
+forumRouter.get('/like/:threadId', checkAuth, forumController.likeThread);
+
+// dislike thread
+forumRouter.get('/dislike/:threadId', checkAuth, forumController.disLikeThread);
 
 
 module.exports = forumRouter;

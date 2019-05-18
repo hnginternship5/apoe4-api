@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import timestamps from 'mongoose-timestamp';
 
 const Schema = mongoose.Schema;
 
@@ -8,9 +7,8 @@ const QuestionSchema = new Schema({
         type: String,
         required: true
     },
-    position: {
-        type: Number,
-        default: 0
+    child: {
+        type: String,
     },
     type: {
         type: String,

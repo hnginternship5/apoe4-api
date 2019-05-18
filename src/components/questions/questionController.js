@@ -77,7 +77,7 @@ class QuestionController {
         if (questions.length < 1) {
             return res.status(httpErrorCodes.OK).json(JsendSerializer.fail('No question found!', null, 404));
         }
-
+        
         for (let i = 0; i < questions.length; i++) {
             const question = questions[i];
             if (arrayAnswers.length > 0) {
@@ -93,6 +93,7 @@ class QuestionController {
                      question['options'] = optionNames;
                     return res.status(200).json({
                         question,
+                        options: optionNames,
                         error: false,
                         status: 0
                     });

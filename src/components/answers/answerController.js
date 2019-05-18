@@ -92,5 +92,11 @@ class AnswerController {
             return res.status(httpErrorCodes.INTERNAL_SERVER_ERROR).json(JsendSerializer.fail('An internal Server error has occured!', err, 500));
         }
     }
+
+    async allAnswers(req, res) {
+        const all = await QuestionModel.Question.find({owner: req.owner });
+
+        return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Questions are:', all, 201));
+    }
 }
 export default new AnswerController();

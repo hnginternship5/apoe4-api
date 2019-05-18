@@ -7,6 +7,7 @@ const answerRouter = Router();
 
 //Create Answers
 answerRouter.post('/:questionId', checkAuth, helpers.reassignOwner, AnswerController.createAnswer);
+answerRouter.get('/', checkAuth, AnswerController.allAnswers);
 
 
 

@@ -6,7 +6,7 @@ const categoryRouter = Router();
 
 categoryRouter.post('/create', checkAuth, Category.create);
 categoryRouter.get('/', Category.all);
-categoryRouter.put('/modify', Category.modify);
+categoryRouter.put('/modify/:id', checkAuth, Category.modify);
 
 
 module.exports = categoryRouter;

@@ -1,3 +1,5 @@
+import Option from "../options/optionsModel";
+
 class QuestionHelper {
     checkAnsweredQuestion(question, arr){
         const qId = JSON.stringify(question._id);
@@ -20,12 +22,17 @@ class QuestionHelper {
         }
     }
     
-    checkPositionOfQuestion(question){
-        if (question.position > 1) {
-            return false
-        } else {
-            return true;
+    async swapOptionsName(options){
+        let optionNames = []
+
+        for (let i = 0; i < options.length; i++) {
+            const id = options[i];
+            const option = await Option.findById(id);
+            const name = option.option;
+            optionNames.push(name);
         }
+
+        return optionNames;
     }
 
     checkRegisterQuestionExists(answerArray, questionArray){

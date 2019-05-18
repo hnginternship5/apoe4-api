@@ -599,10 +599,10 @@ define({ "api": [
           },
           {
             "group": "Parameter",
-            "type": "Number",
-            "optional": false,
-            "field": "position",
-            "description": "<p>This parameter is still worked on, it's optional for now.</p>"
+            "type": "String",
+            "optional": true,
+            "field": "child",
+            "description": "<p>This is the id of the next question to be answered for those that have parent-child relationship.</p>"
           }
         ]
       }
@@ -650,8 +650,15 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "category",
-            "description": "<p>Register, Daily, IADL.</p>"
+            "field": "type",
+            "description": "<p>Register, Noon, Morning, Night.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "nextQuestion",
+            "description": "<p>This is the id of the child question.</p>"
           }
         ]
       }
@@ -661,7 +668,7 @@ define({ "api": [
   },
   {
     "type": "patch",
-    "url": "/questions/updateQuestion",
+    "url": "/questions/updateQuestion/:questionId",
     "title": "Updating a question",
     "name": "questions_updateQuestion",
     "version": "1.0.0",
@@ -698,37 +705,37 @@ define({ "api": [
           {
             "group": "Parameter",
             "type": "String",
-            "optional": false,
+            "optional": true,
             "field": "text",
             "description": "<p>String of text to represent the question. e.g How was your day?</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
-            "optional": false,
+            "optional": true,
             "field": "type",
             "description": "<p>Morning, Noon, Night, Register.</p>"
           },
           {
             "group": "Parameter",
             "type": "Array",
-            "optional": false,
+            "optional": true,
             "field": "options",
             "description": "<p>Array of the User's Options.</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
-            "optional": false,
+            "optional": true,
             "field": "category",
             "description": "<p>Category of question. i.e Register, Daily, IADL.</p>"
           },
           {
             "group": "Parameter",
-            "type": "Number",
-            "optional": false,
-            "field": "position",
-            "description": "<p>This parameter is still worked on, it's optional for now.</p>"
+            "type": "String",
+            "optional": true,
+            "field": "child",
+            "description": "<p>This is the id of the next question to be answered for those that have parent-child relationship.</p>"
           }
         ]
       }

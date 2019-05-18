@@ -1,5 +1,6 @@
 import Forum from './forumModel';
 import Comment from './comments';
+import Like from './likes';
 import { User } from '../user/userModel';
 import AppError from '../../handlers/AppError';
 import JsendSerializer from '../../util/JsendSerializer';
@@ -287,6 +288,70 @@ class forumController {
         const otherComments = await Comment.find({ threadId: thread });
         return res.status(httpErrorCodes.OK).json(JsendSerializer.success('Comment has been deleted', otherComments));
 
+    }
+
+    async likeThread(req, res) {
+        const { threadId } = req.params;
+        const Thread = await Forum.findById(threadId);
+
+        if (!Thread) {
+            const errorResponse = JsendSerializer
+                .error('Thread does not exist', httpErrorCodes.NOT_FOUND);
+            return res.status(httpErrorCodes.NOT_FOUND).json(errorResponse)
+        }
+
+        const checkLike = await Like.findOne({
+            threadId,
+            author: req.owner,
+        });
+
+        if (checkLike) {
+            const errorResponse = JsendSerializer
+                .error('You liked this thread already', httpErrorCodes.BAD_REQUEST);
+            return res.status(httpErrorCodes.BAD_REQUEST).json(errorResponse)
+        }
+
+        const like = new Like({
+            threadId,
+            author: req.owner,
+        });
+
+        await like.save();
+
+        const Response = JsendSerializer
+                .success('Thread liked', httpErrorCodes.OK);
+            return res.status(httpErrorCodes.OK).json(Response)
+    }
+
+    async disLikeThread(req, res) {
+        const { threadId } = req.params;
+        const Thread = await Forum.findById(threadId);
+
+        if (!Thread) {
+            const errorResponse = JsendSerializer
+                .error('Thread does not exist', httpErrorCodes.NOT_FOUND);
+            return res.status(httpErrorCodes.NOT_FOUND).json(errorResponse)
+        }
+
+        const checkLike = await Like.findOne({
+            threadId,
+            author: req.owner,
+        });
+
+        if (!checkLike) {
+            const errorResponse = JsendSerializer
+                .error('You have not liked this thread yet', httpErrorCodes.BAD_REQUEST);
+            return res.status(httpErrorCodes.BAD_REQUEST).json(errorResponse)
+        }
+
+        await Like.findOneAndDelete({
+            threadId,
+            author: req.owner,
+        });
+
+        const Response = JsendSerializer
+                .success('Thread disliked', httpErrorCodes.OK);
+            return res.status(httpErrorCodes.OK).json(Response)
     }
 }
 

@@ -232,7 +232,7 @@ class AuthController {
         return jwt.sign({
             id
         }, process.env.JWT_SECRET, {
-            expiresIn: 86400 * 2, //48 hours, 2 days
+            expiresIn: 86400 * 24, //48 hours, 2 days
         });
     }
 

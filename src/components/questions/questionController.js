@@ -5,6 +5,7 @@ import answerModel from "../answers/answerModel";
 import mongoose from "mongoose";
 import questionHelper from "./questionHelper";
 import questionModel from "./questionModel";
+import QuestionBank from "../questionBank/questionbankModel";
 
 class QuestionController {
 
@@ -72,72 +73,93 @@ class QuestionController {
             type = "Register";
         }
 
-        const questions = await QuestionModel.Question.find({ type });
+        let questions = [];
+        let specialQuestions = [];
+
+
+
+        const specialCategoryQuestions = await QuestionBank.find({type});
+
+        if(specialCategoryQuestions.length > 0){
+            for (let i = 0; i < specialCategoryQuestions.length; i++) {
+                const question = specialCategoryQuestions[i];
+                const stringQuestionId = JSON.stringify(question._id)
+                const checkIfAnswered = arrayAnswers.includes(stringQuestionId);
+                if(!checkIfAnswered){
+                    specialQuestions.push(question);
+                }
+            }
+        }
+
+        if(specialQuestions.length > 0){
+            questions = specialQuestions;
+        }else{
+            questions = await QuestionModel.Question.find({ type });
+        }
 
         if (questions.length < 1) {
             return res.status(httpErrorCodes.OK).json(JsendSerializer.fail('No question found!', null, 404));
         }
-        
+
         for (let i = 0; i < questions.length; i++) {
-            const question = questions[i];
+
+            let question = questions[i];
+            
             if (arrayAnswers.length > 0) {
                 const answered = await questionHelper.checkAnsweredQuestion(question, arrayAnswers);
                 if (answered) {
+                    
                     questionType = await questionHelper.checkQuestionType(question, type);
                 } else {
                     continue;
                 }
                 //console.log(questionType)
                 if (questionType) {
-                     optionNames= await questionHelper.swapOptionsName(question.options);
-                     question['options'] = optionNames;
+                    
+                    if(specialQuestions.length < 1)
+                        optionNames= await questionHelper.swapOptionsName(question.options);
+                    else
+                        optionNames = question.options    
+                     //question['options'] = optionNames;
+                    question = {
+                        options: optionNames,
+                        text: question.text,
+                        _id: question._id,
+                        type: question.type,
+                        category: question.category,
+                    }
                     return res.status(200).json({
                         question,
-                        options: optionNames,
                         error: false,
                         status: 0
                     });
-                           // break;
                 } else {
                     continue;
                 }
-
-                // if (questionPosition) {
-                //     return res.status(200).json({
-                //         question: question,
-                //         error: false,
-                //         status: 0
-                //     });
-                //    // break;
-                // }else{
-                //     continue
-                // }
             } else {
                 questionType = await questionHelper.checkQuestionType(question, type);
                 if (questionType) {
-                    optionNames = await questionHelper.swapOptionsName(question.options);
+                    if(specialQuestions.length < 1)
+                        optionNames= await questionHelper.swapOptionsName(question.options);
+                    else
+                        optionNames = question.options  
+                    
+                    question = {
+                        options: optionNames,
+                        text: question.text,
+                        _id: question._id,
+                        type: question.type,
+                        category: question.category,
+                    }
                     return res.status(200).json({
                         question,
-                        options: optionNames,
                         error: false,
                         status: 0
                     });
-                    // break;
-                    //questionPosition = await questionHelper.checkPositionOfQuestion(question);
                 } else {
                     continue;
                 }
-
-                // if (questionPosition) {
-                //     return res.status(200).json({
-                //         question: question,
-                //         error: false,
-                //         status: 0
-                //     });
-                //    // break;
-                // }else{
-                //     continue
-                // }
+                
             }
         }
 

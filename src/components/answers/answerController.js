@@ -38,7 +38,7 @@ class AnswerController {
                 return res.status(httpErrorCodes.OK).json(JsendSerializer.fail('No question selected!', null, 400));
             }
 
-            const findAnswer = await AnswerModel.Answer.findOne({question: questionId, created: dt});
+            const findAnswer = await AnswerModel.Answer.findOne({question: questionId, created: dt, owner: req.owner});
 
             if(findAnswer){
                 return res.status(httpErrorCodes.OK).json(JsendSerializer.fail('Question has been answered already!', null, 400));

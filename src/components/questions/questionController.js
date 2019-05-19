@@ -101,6 +101,8 @@ class QuestionController {
             return res.status(httpErrorCodes.OK).json(JsendSerializer.fail('No question found!', null, 404));
         }
 
+        //return res.json(questions)
+
         for (let i = 0; i < questions.length; i++) {
 
             let question = questions[i];
@@ -108,26 +110,35 @@ class QuestionController {
             if (arrayAnswers.length > 0) {
                 const answered = await questionHelper.checkAnsweredQuestion(question, arrayAnswers);
                 if (answered) {
-                    
                     questionType = await questionHelper.checkQuestionType(question, type);
                 } else {
                     continue;
                 }
                 //console.log(questionType)
                 if (questionType) {
-                    
-                    if(specialQuestions.length < 1)
+                    if(specialQuestions.length < 1){
                         optionNames= await questionHelper.swapOptionsName(question.options);
-                    else
-                        optionNames = question.options    
-                     //question['options'] = optionNames;
-                    question = {
-                        options: optionNames,
-                        text: question.text,
-                        _id: question._id,
-                        type: question.type,
-                        category: question.category,
+                        question = {
+                            options: optionNames,
+                            text: question.text,
+                            _id: question._id,
+                            type: question.type,
+                            category: question.category,
+                        }
                     }
+                    else{
+                        optionNames = question.options
+                        question = {
+                            options: optionNames,
+                            text: question.question,
+                            _id: question._id,
+                            type: question.type,
+                            category: question.category,
+                            image:question.image
+                        }
+                    }
+                    
+
                     return res.status(200).json({
                         question,
                         error: false,
@@ -137,6 +148,7 @@ class QuestionController {
                     continue;
                 }
             } else {
+                console.log(1)
                 questionType = await questionHelper.checkQuestionType(question, type);
                 if (questionType) {
                     if(specialQuestions.length < 1)

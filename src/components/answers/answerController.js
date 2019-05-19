@@ -5,6 +5,7 @@ import questionModel from "../questions/questionModel";
 import Option from "../options/optionsModel";
 import scoreLogModel from "../scoreLogs/scoreLogModel";
 import Category from "../category/categoryModel";
+import QuestionBank from "../questionBank/questionbankModel";
 
 class AnswerController {
     /**
@@ -37,64 +38,119 @@ class AnswerController {
                 return res.status(httpErrorCodes.OK).json(JsendSerializer.fail('No question selected!', null, 400));
             }
 
+            const findAnswer = await AnswerModel.Answer.findOne({question: questionId, created: dt});
+
+            if(findAnswer){
+                return res.status(httpErrorCodes.OK).json(JsendSerializer.fail('Question has been answered already!', null, 400));
+            }
+
+            let specialQuestion = {};
+
             const question = await questionModel.Question.findById(questionId);
 
             if (!question) {
-                return res.status(httpErrorCodes.OK).json(JsendSerializer.fail('Question not found!', null, 404));
+                specialQuestion = await QuestionBank.findById(questionId);
             }
 
-            const option = await Option.findOne({option:text});
+            if(!specialQuestion)
+                return res.status(httpErrorCodes.OK).json(JsendSerializer.fail('Question not found!', null, 404));
+
+            let score = 0;
+            let category = "";
 
             const Answer = new AnswerModel.Answer();
             Answer.question = questionId;
-            Answer.text = option._id;
+            let option = {};
+            if(question){
+                option = await Option.findOne({option:text});
+                score = option.score;
+                Answer.text = option._id;
+                category = question.category;
+            }else if(specialQuestion){
+                if(specialQuestion.answer === text){
+                    Answer.text = "5cdff1bca367b31144980d90";
+                    score = specialQuestion.mark;
+                    category = specialQuestion.category;
+                }else{
+                    Answer.text = "5cdff1cda367b31144980d91";
+                    score = 0;
+                    category = specialQuestion.category;
+                }
+            }
             Answer.owner = req.owner;
 
             await Answer.save();
 
-            const numberOfOptions = question.options.length;
-            let scoreOfhighestOption = 0;
-            for (let i = 0; i < numberOfOptions; i++) {
-                const eachoption = question.options[i];  
-                const getOption = await Option.findById(eachoption);
-                const scoreOfOption = getOption.score;
-
-                if (scoreOfOption > scoreOfhighestOption) {
-                    scoreOfhighestOption = scoreOfOption;
-                }
-            
-            }
-            
-            let totalScore = 0;
-
-            const category = question.category;
-            const score = option.score;
-            let scoreLog = await scoreLogModel.ScoreLog.findOne({category, created: dt, owner: req.owner});
-            let categoryScore = 0;
             let categoryData = {};
-            if (scoreLog) {
-                scoreLog.answers.push(Answer._id);
-                let currentScore = scoreLog.score
-                if (isNaN(currentScore)) {
-                    currentScore = 0;
+            let totalScore = 0;
+             
+            let scoreLog = await scoreLogModel.ScoreLog.findOne({category, created: dt, owner: req.owner});
+            
+            let categoryScore = 0;
+            if(question){
+                const numberOfOptions = question.options.length;
+                let scoreOfhighestOption = 0;
+                for (let i = 0; i < numberOfOptions; i++) {
+                    const eachoption = question.options[i];  
+                    const getOption = await Option.findById(eachoption);
+                    const scoreOfOption = getOption.score;
+
+                    if (scoreOfOption > scoreOfhighestOption) {
+                        scoreOfhighestOption = scoreOfOption;
+                    }
                 }
-                scoreLog.score = score + currentScore;
 
-                await scoreLog.save();
-                const numberOfAnswers = scoreLog.answers.length;
-                categoryScore = scoreLog.score;
-                totalScore = scoreOfhighestOption * numberOfAnswers;
-            }else{
-                const newScoreLog = new scoreLogModel.ScoreLog();
-                newScoreLog.owner = req.owner;
-                newScoreLog.category = category;
-                newScoreLog.answers = [Answer._id];
-                newScoreLog.score = score;
+                
+                if (scoreLog) {
+                    scoreLog.answers.push(Answer._id);
+                    let currentScore = scoreLog.score
+                    if (isNaN(currentScore)) {
+                        currentScore = 0;
+                    }
+                    scoreLog.score = score + currentScore;
 
-                await newScoreLog.save();
-                categoryScore = scoreLog.score;
-                totalScore = categoryScore;
+                    await scoreLog.save();
+                    const numberOfAnswers = scoreLog.answers.length;
+                    categoryScore = scoreLog.score;
+                    totalScore = scoreOfhighestOption * numberOfAnswers;
+                }else{
+                    const newScoreLog = new scoreLogModel.ScoreLog();
+                    newScoreLog.owner = req.owner;
+                    newScoreLog.category = category;
+                    newScoreLog.answers = [Answer._id];
+                    newScoreLog.score = score;
+
+                    await newScoreLog.save();
+                    categoryScore = newScoreLog.score;
+                    totalScore = categoryScore;
+                }
+            }else if(specialQuestion){
+                if (scoreLog) {
+                    scoreLog.answers.push(Answer._id);
+                    let currentScore = scoreLog.score;
+                    scoreLog.category = category;
+                    if (isNaN(currentScore)) {
+                        currentScore = 0;
+                    }
+                    scoreLog.score = score + currentScore;
+
+                    await scoreLog.save();
+                    const numberOfAnswers = scoreLog.answers.length;
+                    categoryScore = scoreLog.score;
+                    totalScore = numberOfAnswers;
+                }else{
+                    const newScoreLog = new scoreLogModel.ScoreLog();
+                    newScoreLog.owner = req.owner;
+                    newScoreLog.category = category;
+                    newScoreLog.answers = [Answer._id];
+                    newScoreLog.score = score;
+
+                    await newScoreLog.save();
+                    categoryScore = newScoreLog.score;
+                    totalScore = categoryScore;
+                }
             }
+            
             const findCategory = await Category.findById(category);
             categoryData['name'] = findCategory.category;
             categoryData['score'] = categoryScore;

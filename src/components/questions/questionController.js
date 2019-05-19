@@ -103,7 +103,7 @@ class QuestionController {
 
         for (let i = 0; i < questions.length; i++) {
 
-            const question = questions[i];
+            let question = questions[i];
             
             if (arrayAnswers.length > 0) {
                 const answered = await questionHelper.checkAnsweredQuestion(question, arrayAnswers);
@@ -121,9 +121,15 @@ class QuestionController {
                     else
                         optionNames = question.options    
                      //question['options'] = optionNames;
+                    question = {
+                        options: optionNames,
+                        text: question.text,
+                        _id: question._id,
+                        type: question.type,
+                        category: question.category,
+                    }
                     return res.status(200).json({
                         question,
-                        options: optionNames,
                         error: false,
                         status: 0
                     });
@@ -137,9 +143,16 @@ class QuestionController {
                         optionNames= await questionHelper.swapOptionsName(question.options);
                     else
                         optionNames = question.options  
+                    
+                    question = {
+                        options: optionNames,
+                        text: question.text,
+                        _id: question._id,
+                        type: question.type,
+                        category: question.category,
+                    }
                     return res.status(200).json({
                         question,
-                        options: optionNames,
                         error: false,
                         status: 0
                     });

@@ -58,7 +58,7 @@ class AnswerController {
             let score = 0;
             let category = "";
 
-            const Answer = new AnswerModel.Answer();
+            let Answer = new AnswerModel.Answer();
             Answer.question = questionId;
             let option = {};
             if(question){
@@ -80,6 +80,15 @@ class AnswerController {
             Answer.owner = req.owner;
 
             await Answer.save();
+
+            Answer = {
+                text,
+                created: Answer.created,
+                _id: Answer._id,
+                question: Answer.question,
+                owner: Answer.owner,
+                __v: Answer.__v
+            };
 
             let categoryData = {};
             let totalScore = 0;
@@ -149,12 +158,19 @@ class AnswerController {
                     categoryScore = newScoreLog.score;
                     totalScore = categoryScore;
                 }
+
+                const answer = {
+                    text,
+                    created: specialQuestion.created,
+
+                }
             }
             
             const findCategory = await Category.findById(category);
             categoryData['name'] = findCategory.category;
             categoryData['score'] = categoryScore;
             categoryData['total'] = totalScore;
+            
             return res.status(httpErrorCodes.OK).json({
                 Answer,
                 categoryData,

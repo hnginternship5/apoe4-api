@@ -6,6 +6,7 @@ import Option from "../options/optionsModel";
 import scoreLogModel from "../scoreLogs/scoreLogModel";
 import Category from "../category/categoryModel";
 import QuestionBank from "../questionBank/questionbankModel";
+import answerHelper from "./answerHelper";
 
 class AnswerController {
     /**
@@ -38,7 +39,7 @@ class AnswerController {
                 return res.status(httpErrorCodes.OK).json(JsendSerializer.fail('No question selected!', null, 400));
             }
 
-            const findAnswer = await AnswerModel.Answer.findOne({question: questionId, created: dt});
+            const findAnswer = await AnswerModel.Answer.findOne({question: questionId, created: dt, owner: req.owner});
 
             if(findAnswer){
                 return res.status(httpErrorCodes.OK).json(JsendSerializer.fail('Question has been answered already!', null, 400));
@@ -58,7 +59,7 @@ class AnswerController {
             let score = 0;
             let category = "";
 
-            const Answer = new AnswerModel.Answer();
+            let Answer = new AnswerModel.Answer();
             Answer.question = questionId;
             let option = {};
             if(question){
@@ -80,6 +81,15 @@ class AnswerController {
             Answer.owner = req.owner;
 
             await Answer.save();
+
+            Answer = {
+                text,
+                created: Answer.created,
+                _id: Answer._id,
+                question: Answer.question,
+                owner: Answer.owner,
+                __v: Answer.__v
+            };
 
             let categoryData = {};
             let totalScore = 0;
@@ -122,7 +132,7 @@ class AnswerController {
 
                     await newScoreLog.save();
                     categoryScore = newScoreLog.score;
-                    totalScore = categoryScore;
+                    totalScore = scoreOfhighestOption;
                 }
             }else if(specialQuestion){
                 if (scoreLog) {
@@ -147,7 +157,7 @@ class AnswerController {
 
                     await newScoreLog.save();
                     categoryScore = newScoreLog.score;
-                    totalScore = categoryScore;
+                    totalScore = 1;
                 }
             }
             
@@ -155,6 +165,9 @@ class AnswerController {
             categoryData['name'] = findCategory.category;
             categoryData['score'] = categoryScore;
             categoryData['total'] = totalScore;
+            
+            await answerHelper.categoryRating(req.owner, category, dt, categoryScore, totalScore)
+            
             return res.status(httpErrorCodes.OK).json({
                 Answer,
                 categoryData,

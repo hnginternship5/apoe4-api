@@ -17,7 +17,10 @@ import mailRouter from './routes/mail';
 import forumRouter from './routes/forum';
 import categoryRouter from './routes/category';
 import optionRouter from './routes/option';
-import passport from './config/passport';
+import passportConfig from './config/passport';
+import qbRouter from './routes/questionbank';
+import trackRouter from './routes/tracker';
+import passport from 'passport';
 
 
 const app = express();
@@ -48,6 +51,8 @@ app.use('/api/v1/mail', mailRouter);
 app.use('/api/v1/forum', forumRouter);
 app.use('/api/v1/categories', categoryRouter);
 app.use('/api/v1/options', optionRouter);
+app.use('/api/v1/question-bank', qbRouter);
+app.use('/api/v1/category', trackRouter);
 
 // Handle favicon requests from browsers
 app.get('/favicon.ico', (req, res) => res.sendStatus(204));

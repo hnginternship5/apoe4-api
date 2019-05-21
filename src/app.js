@@ -17,7 +17,7 @@ import mailRouter from './routes/mail';
 import forumRouter from './routes/forum';
 import categoryRouter from './routes/category';
 import optionRouter from './routes/option';
-import passport from 'passport';
+import passport from './config/passport';
 
 
 const app = express();

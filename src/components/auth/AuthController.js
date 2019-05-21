@@ -231,9 +231,7 @@ class AuthController {
     signToken(id) {
         return jwt.sign({
             id
-        }, process.env.JWT_SECRET, {
-            expiresIn: 86400 * 24, //48 hours, 2 days
-        });
+        }, process.env.JWT_SECRET);
     }
 
     signRefreshToken(id) {

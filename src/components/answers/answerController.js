@@ -6,6 +6,7 @@ import Option from "../options/optionsModel";
 import scoreLogModel from "../scoreLogs/scoreLogModel";
 import Category from "../category/categoryModel";
 import QuestionBank from "../questionBank/questionbankModel";
+import answerHelper from "./answerHelper";
 
 class AnswerController {
     /**
@@ -131,7 +132,7 @@ class AnswerController {
 
                     await newScoreLog.save();
                     categoryScore = newScoreLog.score;
-                    totalScore = categoryScore;
+                    totalScore = scoreOfhighestOption;
                 }
             }else if(specialQuestion){
                 if (scoreLog) {
@@ -156,13 +157,7 @@ class AnswerController {
 
                     await newScoreLog.save();
                     categoryScore = newScoreLog.score;
-                    totalScore = categoryScore;
-                }
-
-                const answer = {
-                    text,
-                    created: specialQuestion.created,
-
+                    totalScore = 1;
                 }
             }
             
@@ -170,6 +165,8 @@ class AnswerController {
             categoryData['name'] = findCategory.category;
             categoryData['score'] = categoryScore;
             categoryData['total'] = totalScore;
+            
+            await answerHelper.categoryRating(req.owner, category, dt, categoryScore, totalScore)
             
             return res.status(httpErrorCodes.OK).json({
                 Answer,

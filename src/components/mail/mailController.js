@@ -67,15 +67,15 @@ class MailController {
                 'Content-Type': 'application/json',
                 'Authorization': 'apikey 47116c36887736ffd3b771299319ac94-us20'
             }
-        }
+        };
         request(clientServerOptions, function(err, response) {
             if (err) {
-                return res.status(500).json({ error: err })
+                return res.status(500).json({ error: err });
             } else {
                 if (response.statusCode === 200) {
-                    return res.status(200).json(JSON.parse(response.body))
+                    return res.status(200).json(JSON.parse(response.body));
                 } else {
-                    res.status(400).json(JSON.parse(response.body))
+                    res.status(400).json(JSON.parse(response.body));
                 }
             }
         });

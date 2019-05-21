@@ -7,7 +7,6 @@ import config from './config';
 import AppError from './handlers/AppError';
 import path from 'path';
 import expressValidator from "express-validator";
-import session from 'express-session';
 
 // routers
 import authRouter from './routes/auth';
@@ -18,10 +17,10 @@ import mailRouter from './routes/mail';
 import forumRouter from './routes/forum';
 import categoryRouter from './routes/category';
 import optionRouter from './routes/option';
+import passportConfig from './config/passport';
 import qbRouter from './routes/questionbank';
 import trackRouter from './routes/tracker';
 import passport from 'passport';
-import flash from 'express-flash';
 
 
 const app = express();
@@ -31,7 +30,6 @@ app.use(
         maxAge: 1728000,
     }),
 );
-app.use(session({ secret: 'qwertyhbvcdtyjnb' }));
 app.use(morganLogger('dev'));
 app.use(
     bodyParser.urlencoded({
@@ -39,7 +37,6 @@ app.use(
     }),
 );
 app.use(bodyParser.json());
-app.use(flash());
 app.use(express.static(path.join(__dirname, "../public")));
 app.use(expressValidator());
 app.use(passport.initialize());

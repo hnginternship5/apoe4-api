@@ -10,7 +10,7 @@ router.post('/login', catchErrors(authCtrl.login));
 
 router.get('/google',
     passport.authenticate('google', {
-        scope: ['email profile'],
+        scope: ['email', 'profile'],
         session: false
     }));
 router.get('/google/failure', (req, res, next) => {
@@ -19,21 +19,22 @@ router.get('/google/failure', (req, res, next) => {
     });
 });
 router.get('/google/success', (req, res, next) => {
-    console.log(req.body)
+    console.log(req.body);
     return res.status(200).json({
         token: authCtrl.signToken(req.body.owner),
+        email: req.body.profile,
         message: "Google Auth Success"
     });
 });
 router.get('/google/redirect',
     passport.authenticate('google', {
-        failureRedirect: '/google/failure',
+        failureRedirect: '/auth/google/failure',
         session: false
     }),
     function(req, res) {
         // Successful authentication, redirect home.
         console.log(req.body)
-        res.redirect('/google/success');
+        res.redirect('/api/v1/auth/google/success');
     });
 
 
